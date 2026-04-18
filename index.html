@@ -3,14 +3,25 @@
 <head>
     <!-- Force HTTPS on GitHub Pages -->
     <script>
-        if (window.location.protocol === 'http:' && window.location.hostname.endsWith('.github.io')) {
-            window.location.href = window.location.href.replace(/^http:/, 'https:');
-        }
+        (function() {
+            var host = window.location.hostname;
+            var protocol = window.location.protocol;
+            if (protocol === 'http:' && (host.endsWith('.github.io') || host === 'localhost')) {
+                window.location.href = window.location.href.replace(/^http:/, 'https:');
+            }
+        })();
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CRITICAL: Prevent mixed content -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; media-src 'self' https:; frame-src https://www.youtube.com https://youtube.com; connect-src 'self' https:;">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <title>KlantoPlayz | Professional Video Editor</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -156,6 +167,7 @@
     <!-- NOTE: Add HTTPS/SSL certificate to your hosting for full security -->
     <meta name="referrer" content="strict-origin-when-cross-origin">
 
+<base target="_blank">
 <base target="_blank">
 </head>
 <body class="text-slate-800 antialiased selection:bg-sky-200 selection:text-sky-900">
@@ -851,9 +863,13 @@
             <!-- Video Container -->
             <div class="relative aspect-video bg-black">
                 <iframe id="modal-video-frame" src="" width="100%" height="100%" frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
                         allowfullscreen 
-                        class="absolute inset-0 w-full h-full" sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy"></iframe>
+                        class="absolute inset-0 w-full h-full" 
+                        sandbox="allow-scripts allow-same-origin allow-presentation" 
+                        loading="lazy"
+                        title="YouTube Video Player"></iframe>
             </div>
 
             <!-- Mobile Fallback Notice -->
@@ -953,8 +969,8 @@
             const fallback = document.getElementById('mobile-fallback');
             const directLink = document.getElementById('direct-video-link');
 
-            // Standard YouTube embed - works for both videos and shorts
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
+            // Enhanced security: Use privacy-enhanced mode and force HTTPS
+            iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1&origin=${encodeURIComponent(window.location.origin)}`;
 
             // Direct YouTube link for fallback
             directLink.href = `https://www.youtube.com/watch?v=${videoId}`;
