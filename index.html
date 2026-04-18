@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <!-- Force HTTPS on GitHub Pages -->
+    <script>
+        if (window.location.protocol === 'http:' && window.location.hostname.includes('github.io')) {
+            window.location.href = window.location.href.replace('http:', 'https:');
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KlantoPlayz | Professional Video Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --sky-primary: #0EA5E9;
+            --sky-dark: #0284C7;
+            --sky-light: #E0F2FE;
+            --sky-gradient: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 50%, #7DD3FC 100%);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .sky-gradient-text {
+            background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .sky-gradient-bg {
+            background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 50%, #7DD3FC 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -15px rgba(14, 165, 233, 0.3);
+        }
+        
+        .video-overlay {
+            background: linear-gradient(to top, rgba(2, 132, 199, 0.9) 0%, transparent 100%);
+        }
+        
+        .play-button {
+            transition: all 0.3s ease;
+        }
+        
+        .play-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: var(--sky-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .skill-bar {
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='https://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #0EA5E9;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.2s ease, background 0.2s ease;
+            mix-blend-mode: difference;
+        }
+        
+        .custom-cursor.hover {
+            transform: scale(2);
+            background: rgba(14, 165, 233, 0.3);
+        }
+        
+        .timeline-line {
+            background: linear-gradient(to bottom, #0EA5E9, #38BDF8);
+        }
+        
+        .reveal-text {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        }
+        
+        .project-card:hover .project-info {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .project-info {
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+    </style>
+    <!-- Security (HTTPS-ready) -->
+    <!-- NOTE: Add HTTPS/SSL certificate to your hosting for full security -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+<base target="_blank">
+</head>
+<body class="text-slate-800 antialiased selection:bg-sky-200 selection:text-sky-900">
+
+    <!-- Grain Overlay -->
+    <div class="grain"></div>
+    
+    <!-- Custom Cursor -->
+    <div class="custom-cursor hidden md:block" id="cursor"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-40 top-0 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl font-bold tracking-tighter text-slate-900">
+                        Klanto<span class="text-sky-500">Playz</span>
+                    </span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="nav-link text-slate-700 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors">Home</a>
+                        <a href="#work" class="nav-link text-slate-700 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors">Work</a>
+                        <a href="#about" class="nav-link text-slate-700 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors">About</a>
+                        <a href="#skills" class="nav-link text-slate-700 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors">Skills</a>
+                        <a href="#contact" class="bg-sky-500 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-sky-600 transition-all hover:shadow-lg hover:shadow-sky-500/30">Contact</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-slate-700 hover:text-sky-600 p-2">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-lg border-t border-slate-200">
+            <div class="px-4 pt-2 pb-6 space-y-1">
+                <a href="#home" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 rounded-md">Home</a>
+                <a href="#work" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 rounded-md">Work</a>
+                <a href="#about" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 rounded-md">About</a>
+                <a href="#skills" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 rounded-md">Skills</a>
+                <a href="#contact" class="block px-3 py-3 text-base font-medium text-sky-600 font-semibold">Contact Me</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <!-- Background Elements -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-sky-50 via-white to-blue-50"></div>
+            <div class="absolute top-20 right-0 w-96 h-96 bg-sky-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+            <div class="absolute bottom-20 left-20 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
+            <div class="absolute top-40 left-1/3 w-64 h-64 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 floating"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8 text-center lg:text-left">
+                <div class="inline-flex items-center px-4 py-2 rounded-full bg-sky-100 text-sky-700 text-sm font-medium mb-4 border border-sky-200">
+                    <span class="flex h-2 w-2 rounded-full bg-sky-500 mr-2 animate-pulse"></span>
+                    Available for Freelance Work
+                </div>
+                <h1 class="text-5xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-tight">
+                    Crafting Visual <br>
+                    <span class="sky-gradient-text font-display italic">Stories</span> That Move
+                </h1>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                    Professional video editor with 2+ years of experience transforming raw footage into compelling narratives. Specializing in cinematic color grading, seamless transitions, and rhythm-driven editing.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="#work" class="group inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white bg-sky-500 rounded-full hover:bg-sky-600 transition-all hover:shadow-xl hover:shadow-sky-500/30 hover:-translate-y-1">
+                        View My Work
+                        <i data-lucide="arrow-right" class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="#contact" class="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-sky-600 bg-white border-2 border-sky-200 rounded-full hover:border-sky-500 hover:bg-sky-50 transition-all">
+                        Get in Touch
+                    </a>
+                </div>
+                <div class="flex items-center justify-center lg:justify-start gap-8 pt-4 text-slate-500 text-sm">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-sky-500"></i>
+                        <span>50+ Projects</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-sky-500"></i>
+                        <span>2 Years Exp.</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-sky-500"></i>
+                        <span>4K Specialist</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hero Video Preview -->
+            <div class="relative lg:h-[600px] flex items-center justify-center">
+                <div class="relative w-full max-w-lg aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl shadow-sky-500/20">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent z-10"></div>
+                    <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=1000&fit=crop" alt="Video Editing Setup" class="w-full h-full object-cover">
+                    <div class="absolute bottom-6 left-6 right-6 z-20 text-white">
+                        <p class="text-sm font-medium text-sky-300 mb-1">2024 Showreel</p>
+                        <h3 class="text-xl font-bold">Best of KlantoPlayz</h3>
+                    </div>
+                </div>
+                <!-- Floating Elements -->
+                <div class="absolute -top-6 -right-6 bg-white p-4 rounded-xl shadow-lg floating" style="animation-delay: 0.5s;">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center">
+                            <i data-lucide="film" class="w-6 h-6 text-sky-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500">Projects</p>
+                            <p class="text-lg font-bold text-slate-900">50+</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg floating" style="animation-delay: 1s;">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center">
+                            <i data-lucide="award" class="w-6 h-6 text-sky-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500">Experience</p>
+                            <p class="text-lg font-bold text-slate-900">2 Years</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i data-lucide="chevron-down" class="w-6 h-6 text-sky-400"></i>
+        </div>
+    </section>
+
+    <!-- Selected Work Section -->
+    <section id="work" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-sm font-semibold text-sky-600 tracking-wide uppercase mb-2">Portfolio</h2>
+                <h3 class="text-4xl font-bold text-slate-900 mb-4">Selected Works</h3>
+                <p class="text-slate-600 max-w-2xl mx-auto">A curated collection of projects showcasing editing techniques, color grading, and storytelling across various genres.</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-3 mb-12">
+                <button class="filter-btn active px-6 py-2 rounded-full text-sm font-medium bg-sky-500 text-white transition-all" data-filter="all">All</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-sky-100 hover:text-sky-600 transition-all" data-filter="commercial">Gaming Videos</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-sky-100 hover:text-sky-600 transition-all" data-filter="music">Vlog Edits</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-sky-100 hover:text-sky-600 transition-all" data-filter="social">Reel Edits</button>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
+                <!-- Project 1 -->
+                <div class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg" 
+                     data-category="commercial" 
+                     onclick="openVideoModal('eM8xBBNiseo')">
+                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/eM8xBBNiseo/hqdefault.jpg" 
+                             onerror="this.src='https://img.youtube.com/vi/eM8xBBNiseo/mqdefault.jpg'; this.onerror=null;" 
+                             loading="lazy" 
+                             alt="Foreign Gaming Edit" 
+                             onerror="this.src='https://img.youtube.com/vi/eM8xBBNiseo/hqdefault.jpg'"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
+                                <i data-lucide="play" class="w-6 h-6 text-sky-600 ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                            Watch
+                        </div>
+                    </div>
+                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full">Gaming Videos</span>
+                            <span class="text-xs text-slate-400">2024</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-2">Foreign Gaming Edit</h4>
+                        <p class="text-slate-600 text-sm line-clamp-2">Foreign gaming school runaway edit, recorded and edited by me.</p>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg" 
+                     data-category="music" 
+                     onclick="openVideoModal('AhHEsNZLueM')">
+                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/AhHEsNZLueM/hqdefault.jpg" 
+                             onerror="this.src='https://img.youtube.com/vi/AhHEsNZLueM/mqdefault.jpg'; this.onerror=null;" 
+                             loading="lazy" 
+                             alt="Ducky Bhai Vlog" 
+                             onerror="this.src='https://img.youtube.com/vi/AhHEsNZLueM/hqdefault.jpg'"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
+                                <i data-lucide="play" class="w-6 h-6 text-purple-600 ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                            Watch
+                        </div>
+                    </div>
+                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">Vlog Edit</span>
+                            <span class="text-xs text-slate-400">2024</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-2">Ducky Bhai Vlog</h4>
+                        <p class="text-slate-600 text-sm line-clamp-2">Cinematic music video editing with synchronized beat cuts and neon color palette.</p>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg" 
+                     data-category="social" 
+                     onclick="openVideoModal('VLVYnQtgM4U')">
+                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/VLVYnQtgM4U/hqdefault.jpg" 
+                             onerror="this.src='https://img.youtube.com/vi/VLVYnQtgM4U/mqdefault.jpg'; this.onerror=null;" 
+                             loading="lazy" 
+                             alt="Viral Short" 
+                             onerror="this.src='https://img.youtube.com/vi/VLVYnQtgM4U/hqdefault.jpg'"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
+                                <i data-lucide="play" class="w-6 h-6 text-pink-600 ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                            Watch
+                        </div>
+                    </div>
+                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-pink-600 bg-pink-50 px-3 py-1 rounded-full">Reel Edits</span>
+                            <span class="text-xs text-slate-400">2023</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-2">Viral Short</h4>
+                        <p class="text-slate-600 text-sm line-clamp-2">High-engagement vertical video content optimized for TikTok and Instagram Reels.</p>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg" 
+                     data-category="commercial" 
+                     onclick="openVideoModal('TiZVRT4Yg3M')">
+                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/TiZVRT4Yg3M/hqdefault.jpg" 
+                             onerror="this.src='https://img.youtube.com/vi/TiZVRT4Yg3M/mqdefault.jpg'; this.onerror=null;" 
+                             loading="lazy" 
+                             alt="Minecraft Edit" 
+                             onerror="this.src='https://img.youtube.com/vi/TiZVRT4Yg3M/hqdefault.jpg'"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
+                                <i data-lucide="play" class="w-6 h-6 text-sky-600 ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                            Watch
+                        </div>
+                    </div>
+                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full">Gaming Videos</span>
+                            <span class="text-xs text-slate-400">2023</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-2">Minecraft Edit</h4>
+                        <p class="text-slate-600 text-sm line-clamp-2">Minecraft edit inspired by an Indian YouTuber, recorded and edited by me.</p>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg" 
+                     data-category="music" 
+                     onclick="openVideoModal('uwl6CvYiWTQ')">
+                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/uwl6CvYiWTQ/hqdefault.jpg" 
+                             onerror="this.src='https://img.youtube.com/vi/uwl6CvYiWTQ/mqdefault.jpg'; this.onerror=null;" 
+                             loading="lazy" 
+                             alt="Rajab But Vlog" 
+                             onerror="this.src='https://img.youtube.com/vi/uwl6CvYiWTQ/hqdefault.jpg'"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
+                                <i data-lucide="play" class="w-6 h-6 text-purple-600 ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                            Watch
+                        </div>
+                    </div>
+                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">Vlog Edit</span>
+                            <span class="text-xs text-slate-400">2023</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-2">Rajab But Vlog</h4>
+                        <p class="text-slate-600 text-sm line-clamp-2">Multi-camera concert edit with crowd-synced cuts and atmospheric lighting.</p>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg" 
+                     data-category="social" 
+                     onclick="openVideoModal('Ri1Fdh3MHHk')">
+                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/Ri1Fdh3MHHk/hqdefault.jpg" 
+                             onerror="this.src='https://img.youtube.com/vi/Ri1Fdh3MHHk/mqdefault.jpg'; this.onerror=null;" 
+                             loading="lazy" 
+                             alt="Promotional short" 
+                             onerror="this.src='https://img.youtube.com/vi/Ri1Fdh3MHHk/hqdefault.jpg'"
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
+                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
+                                <i data-lucide="play" class="w-6 h-6 text-pink-600 ml-1"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>
+                            Watch
+                        </div>
+                    </div>
+                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-pink-600 bg-pink-50 px-3 py-1 rounded-full">Reel Edits</span>
+                            <span class="text-xs text-slate-400">2022</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-900 mb-2">Promotional short</h4>
+                        <p class="text-slate-600 text-sm line-clamp-2">A promotional server setup video recorded and edited by our company, highlighting performance and quality</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section><!-- About Section -->
+    <section id="about" class="py-24 bg-slate-50 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-sky-100/50 to-transparent"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="relative">
+                    <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl shadow-sky-500/10">
+                        <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=1000&fit=crop" alt="KlantoPlayz Editing Setup" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-xl max-w-xs">
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class="flex -space-x-2">
+                                <div class="w-10 h-10 rounded-full bg-sky-500 flex items-center justify-center text-white text-xs font-bold">Pr</div>
+                                <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs font-bold">Ae</div>
+                                <div class="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white text-xs font-bold">Da</div>
+                            </div>
+                        </div>
+                        <p class="text-sm font-semibold text-slate-900">Adobe Creative Suite Expert</p>
+                        <p class="text-xs text-slate-500 mt-1">Professional workflow optimization</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <h2 class="text-sm font-semibold text-sky-600 tracking-wide uppercase">About Me</h2>
+                    <h3 class="text-4xl font-bold text-slate-900">KlantoPlayz</h3>
+                    <div class="space-y-4 text-slate-600 leading-relaxed">
+                        <p>
+                            With over 2 years of professional video editing experience, I've developed a keen eye for storytelling through motion. My journey began with gaming content creation, which evolved into a passion for cinematic editing and color grading.
+                        </p>
+                        <p>
+                            I specialize in creating engaging content across multiple platforms—from high-energy TikToks to polished commercial advertisements. My editing style emphasizes rhythm, emotional pacing, and visual coherence that keeps viewers engaged from the first frame to the last.
+                        </p>
+                        <p>
+                            Whether it's syncing cuts to music beats, crafting seamless transitions, or applying cinematic color grades, I bring technical precision and creative flair to every project.
+                        </p>
+                    </div>
+                    
+                    <!-- Timeline -->
+                    <div class="mt-8 space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-3 h-3 rounded-full bg-sky-500"></div>
+                                <div class="w-0.5 h-full bg-sky-200"></div>
+                            </div>
+                            <div class="pb-6">
+                                <span class="text-sm font-semibold text-sky-600">2024 - Present</span>
+                                <h4 class="text-lg font-bold text-slate-900 mt-1">Freelance Video Editor</h4>
+                                <p class="text-slate-600 text-sm mt-1">Working with brands and creators worldwide</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex flex-col items-center">
+                                <div class="w-3 h-3 rounded-full bg-sky-400"></div>
+                                <div class="w-0.5 h-full bg-sky-200"></div>
+                            </div>
+                            <div class="pb-6">
+                                <span class="text-sm font-semibold text-sky-600">2022 - 2024</span>
+                                <h4 class="text-lg font-bold text-slate-900 mt-1">Content Editor</h4>
+                                <p class="text-slate-600 text-sm mt-1">Built portfolio editing gaming and lifestyle content</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-sm font-semibold text-sky-600 tracking-wide uppercase mb-2">Expertise</h2>
+                <h3 class="text-4xl font-bold text-slate-900 mb-4">Technical Proficiency</h3>
+                <p class="text-slate-600 max-w-2xl mx-auto">Mastering industry-standard tools and techniques to deliver professional-grade content.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Skill Card 1 -->
+                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
+                    <div class="w-14 h-14 bg-sky-100 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="scissors" class="w-7 h-7 text-sky-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Video Editing</h4>
+                    <p class="text-slate-600 text-sm mb-4">Precision cutting, pacing, and rhythm synchronization</p>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="skill-bar bg-sky-500 h-2 rounded-full" style="width: 0%" data-width="95%"></div>
+                    </div>
+                    <span class="text-xs text-slate-500 mt-2 inline-block">95% Proficiency</span>
+                </div>
+
+                <!-- Skill Card 2 -->
+                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
+                    <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="palette" class="w-7 h-7 text-purple-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Color Grading</h4>
+                    <p class="text-slate-600 text-sm mb-4">Cinematic LUTs, color correction, and mood enhancement</p>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="skill-bar bg-purple-500 h-2 rounded-full" style="width: 0%" data-width="90%"></div>
+                    </div>
+                    <span class="text-xs text-slate-500 mt-2 inline-block">90% Proficiency</span>
+                </div>
+
+                <!-- Skill Card 3 -->
+                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
+                    <div class="w-14 h-14 bg-pink-100 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="zap" class="w-7 h-7 text-pink-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Motion Graphics</h4>
+                    <p class="text-slate-600 text-sm mb-4">Text animations, lower thirds, and visual effects</p>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="skill-bar bg-pink-500 h-2 rounded-full" style="width: 0%" data-width="85%"></div>
+                    </div>
+                    <span class="text-xs text-slate-500 mt-2 inline-block">85% Proficiency</span>
+                </div>
+
+                <!-- Skill Card 4 -->
+                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
+                    <div class="w-14 h-14 bg-cyan-100 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="music" class="w-7 h-7 text-cyan-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Sound Design</h4>
+                    <p class="text-slate-600 text-sm mb-4">Audio mixing, SFX integration, and music synchronization</p>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="skill-bar bg-cyan-500 h-2 rounded-full" style="width: 0%" data-width="88%"></div>
+                    </div>
+                    <span class="text-xs text-slate-500 mt-2 inline-block">88% Proficiency</span>
+                </div>
+
+                <!-- Skill Card 5 -->
+                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
+                    <div class="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="smartphone" class="w-7 h-7 text-indigo-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Social Optimization</h4>
+                    <p class="text-slate-600 text-sm mb-4">Platform-specific formats, captions, and engagement hooks</p>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="skill-bar bg-indigo-500 h-2 rounded-full" style="width: 0%" data-width="92%"></div>
+                    </div>
+                    <span class="text-xs text-slate-500 mt-2 inline-block">92% Proficiency</span>
+                </div>
+
+                <!-- Skill Card 6 -->
+                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
+                    <div class="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="clock" class="w-7 h-7 text-emerald-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-2">Fast Delivery</h4>
+                    <p class="text-slate-600 text-sm mb-4">Efficient workflow management and quick turnaround times</p>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="skill-bar bg-emerald-500 h-2 rounded-full" style="width: 0%" data-width="96%"></div>
+                    </div>
+                    <span class="text-xs text-slate-500 mt-2 inline-block">96% Proficiency</span>
+                </div>
+            </div>
+
+            <!-- Software Tags -->
+            <div class="mt-16 flex flex-wrap justify-center gap-3">
+                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">Adobe Premiere Pro</span>
+                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">After Effects</span>
+                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">DaVinci Resolve</span>
+                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">Audition</span>
+                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">Photoshop</span>
+                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">Media Encoder</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials/Stats Section -->
+    <section class="py-24 sky-gradient-bg text-white relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'https://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="space-y-2">
+                    <div class="text-5xl font-bold">50+</div>
+                    <div class="text-sky-100 text-sm uppercase tracking-wide">Projects Completed</div>
+                </div>
+                <div class="space-y-2">
+                    <div class="text-5xl font-bold">2+</div>
+                    <div class="text-sky-100 text-sm uppercase tracking-wide">Years Experience</div>
+                </div>
+                <div class="space-y-2">
+                    <div class="text-5xl font-bold">30+</div>
+                    <div class="text-sky-100 text-sm uppercase tracking-wide">Happy Clients</div>
+                </div>
+                <div class="space-y-2">
+                    <div class="text-5xl font-bold">100%</div>
+                    <div class="text-sky-100 text-sm uppercase tracking-wide">Satisfaction Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <div class="space-y-6">
+                    <h2 class="text-sm font-semibold text-sky-600 tracking-wide uppercase">Get in Touch</h2>
+                    <h3 class="text-4xl font-bold text-slate-900">Let's Create Something Amazing</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        Ready to bring your vision to life? I'm always open to discussing new projects, creative ideas, or opportunities to be part of your story. Whether it's gaming edits, vlogs, or promotional content - let's collaborate!
+                    </p>
+
+                    <div class="space-y-4 pt-4">
+                        <!-- Email -->
+                        <a href="mailto:klantoplayzbussiness@gmail.com" class="flex items-center gap-4 group">
+                            <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center group-hover:bg-sky-500 transition-colors">
+                                <i data-lucide="mail" class="w-6 h-6 text-sky-600 group-hover:text-white transition-colors"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Email</p>
+                                <p class="text-slate-900 font-medium group-hover:text-sky-600 transition-colors">klantoplayzbussiness@gmail.com</p>
+                            </div>
+                        </a>
+
+                        <!-- Discord -->
+                        <a href="https://discord.gg/3ajSH6Fk3" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 group">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
+                                <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="text-indigo-600 group-hover:text-white transition-colors">
+                                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Discord</p>
+                                <p class="text-slate-900 font-medium group-hover:text-indigo-600 transition-colors">Join My Server</p>
+                            </div>
+                        </a>
+
+                        <!-- Location -->
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="map-pin" class="w-6 h-6 text-emerald-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Location</p>
+                                <p class="text-slate-900 font-medium">Available Worldwide (Remote)</p>
+                            </div>
+                        </div>
+
+                        <!-- Response Time -->
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="clock" class="w-6 h-6 text-amber-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-slate-500">Response Time</p>
+                                <p class="text-slate-900 font-medium">Usually within 24 hours</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="pt-6">
+                        <p class="text-sm font-medium text-slate-700 mb-4">Follow My Work</p>
+                        <div class="flex gap-4">
+                            <!-- YouTube -->
+                            <a href="https://youtube.com/@klantoplayz" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center text-red-600 hover:text-white hover:bg-red-600 transition-all border border-red-200 shadow-sm group" title="YouTube">
+                                <svg xmlns="https://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                            </a>
+                            <!-- Instagram -->
+                            <a href="https://www.instagram.com/klanto_playz" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-pink-50 rounded-full flex items-center justify-center text-pink-600 hover:text-white hover:bg-gradient-to-br hover:from-purple-600 hover:via-pink-600 hover:to-orange-500 transition-all border border-pink-200 shadow-sm group" title="Instagram">
+                                <svg xmlns="https://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                            </a>
+                            <!-- X (Twitter) -->
+                            <a href="https://x.com/klantoplayz" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-800 hover:text-white hover:bg-black transition-all border border-slate-200 shadow-sm group" title="X (Twitter)">
+                                <svg xmlns="https://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            </a>
+                            <!-- Discord (also in social row) -->
+                            <a href="https://discord.gg/3ajSH6Fk3" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 hover:text-white hover:bg-indigo-500 transition-all border border-indigo-200 shadow-sm group" title="Discord Server">
+                                <svg xmlns="https://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
+                    <h4 class="text-xl font-bold text-slate-900 mb-6">Send a Message</h4>
+                    <form class="space-y-6" action="mailto:klantoplayzbussiness@gmail.com" method="post" enctype="text/plain">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Name</label>
+                                <input type="text" name="name" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all" placeholder="Your name" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
+                                <input type="email" name="email" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all" placeholder="your@email.com" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Project Type</label>
+                            <select name="project" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all">
+                                <option>Gaming Video Edit</option>
+                                <option>Vlog Edit</option>
+                                <option>YouTube Short/Reel</option>
+                                <option>Promotional Video</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Budget Range</label>
+                            <select name="budget" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all">
+                                <option>Under $50</option>
+                                <option>$50 - $100</option>
+                                <option>$100 - $200</option>
+                                <option>$200+</option>
+                                <option>Let's discuss</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Message</label>
+                            <textarea name="message" rows="4" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all resize-none" placeholder="Tell me about your project..." required></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-4 bg-sky-500 text-white rounded-lg font-medium hover:bg-sky-600 transition-all hover:shadow-lg hover:shadow-sky-500/30 flex items-center justify-center gap-2">
+                            Send Message
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                        <p class="text-xs text-slate-500 text-center">Or email me directly at <a href="mailto:klantoplayzbussiness@gmail.com" class="text-sky-600 hover:underline">klantoplayzbussiness@gmail.com</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section><!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-2xl font-bold text-white">
+                Klanto<span class="text-sky-500">Playz</span>
+            </div>
+            <div class="text-sm">
+                © 2024 KlantoPlayz. All rights reserved.
+            </div>
+            <div class="flex gap-6 text-sm">
+                <a href="#" class="hover:text-sky-400 transition-colors">Privacy</a>
+                <a href="#" class="hover:text-sky-400 transition-colors">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/95 backdrop-blur-sm transition-opacity" onclick="closeVideoModal()"></div>
+        <div class="relative w-full max-w-5xl bg-black rounded-2xl overflow-hidden shadow-2xl transform transition-all">
+            <!-- Close Button -->
+            <button onclick="closeVideoModal()" class="absolute -top-12 right-0 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-all z-10">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+
+            <!-- Video Container -->
+            <div class="relative aspect-video bg-black">
+                <iframe id="modal-video-frame" src="" width="100%" height="100%" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen 
+                        allowfullscreen 
+                        class="absolute inset-0 w-full h-full" sandbox="allow-scripts allow-same-origin allow-presentation" loading="lazy"></iframe>
+            </div>
+
+            <!-- Mobile Fallback Notice -->
+            <div id="mobile-fallback" class="hidden p-4 bg-slate-800 text-center">
+                <p class="text-white text-sm mb-2">If video doesn't play, watch on YouTube:</p>
+                <a id="direct-video-link" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">
+                    <svg xmlns="https://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                    Open on YouTube
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+        
+        if (!isTouchDevice && cursor) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX - 10 + 'px';
+                cursor.style.top = e.clientY - 10 + 'px';
+            });
+
+            document.querySelectorAll('a, button, .project-card').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+        }
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+            } else {
+                navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+            }
+        });
+
+        // Mobile Menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking a link
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Project Filtering
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-sky-500', 'text-white');
+                    b.classList.add('bg-slate-100', 'text-slate-600');
+                });
+                btn.classList.remove('bg-slate-100', 'text-slate-600');
+                btn.classList.add('bg-sky-500', 'text-white');
+
+                const filter = btn.getAttribute('data-filter');
+                
+                projectCards.forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'scale(1)';
+                        }, 10);
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.9)';
+                        setTimeout(() => {
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Video Modal Functions (Standard YouTube Embed)
+        function openVideoModal(videoId) {
+            const modal = document.getElementById('video-modal');
+            const iframe = document.getElementById('modal-video-frame');
+            const fallback = document.getElementById('mobile-fallback');
+            const directLink = document.getElementById('direct-video-link');
+
+            // Standard YouTube embed - works for both videos and shorts
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
+
+            // Direct YouTube link for fallback
+            directLink.href = `https://www.youtube.com/watch?v=${videoId}`;
+
+            // Show modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+
+            // Show mobile fallback on touch devices
+            if (window.matchMedia('(pointer: coarse)').matches) {
+                fallback.classList.remove('hidden');
+            }
+
+            // Re-initialize icons
+            lucide.createIcons();
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('video-modal');
+            const iframe = document.getElementById('modal-video-frame');
+            const fallback = document.getElementById('mobile-fallback');
+
+            // Stop video by clearing src
+            iframe.src = '';
+
+            // Hide modal
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+            fallback.classList.add('hidden');
+        }
+
+        //// Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeVideoModal();
+            }
+        });
+    </script>
+</body>
+</html>
