@@ -162,6 +162,45 @@
             opacity: 0;
             transition: all 0.4s ease;
         }
+    
+
+        /* Fix for anchor tag project cards */
+        a.project-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        a.project-card:hover {
+            color: inherit;
+        }
+
+        a.project-card * {
+            pointer-events: none;
+        }
+    
+
+        /* Fix image sizing in project cards */
+        .project-card img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .project-card .aspect-video {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .project-card .aspect-video img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
     <!-- Security (HTTPS-ready) -->
     <!-- NOTE: Add HTTPS/SSL certificate to your hosting for full security -->
@@ -354,7 +393,7 @@
                         <h4 class="text-xl font-bold text-slate-900 mb-2">Foreign Gaming Edit</h4>
                         <p class="text-slate-600 text-sm line-clamp-2">Foreign gaming school runaway edit, recorded and edited by me.</p>
                     </div>
-                </div>
+                </a>
 
                 <!-- Project 2 -->
                 <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
@@ -385,7 +424,7 @@
                         <h4 class="text-xl font-bold text-slate-900 mb-2">Ducky Bhai Vlog</h4>
                         <p class="text-slate-600 text-sm line-clamp-2">Cinematic music video editing with synchronized beat cuts and neon color palette.</p>
                     </div>
-                </div>
+                </a>
 
                 <!-- Project 3 -->
                 <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
@@ -416,7 +455,7 @@
                         <h4 class="text-xl font-bold text-slate-900 mb-2">Viral Short</h4>
                         <p class="text-slate-600 text-sm line-clamp-2">High-engagement vertical video content optimized for TikTok and Instagram Reels.</p>
                     </div>
-                </div>
+                </a>
 
                 <!-- Project 4 -->
                 <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
@@ -447,7 +486,7 @@
                         <h4 class="text-xl font-bold text-slate-900 mb-2">Minecraft Edit</h4>
                         <p class="text-slate-600 text-sm line-clamp-2">Minecraft edit inspired by an Indian YouTuber, recorded and edited by me.</p>
                     </div>
-                </div>
+                </a>
 
                 <!-- Project 5 -->
                 <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
@@ -478,7 +517,7 @@
                         <h4 class="text-xl font-bold text-slate-900 mb-2">Rajab But Vlog</h4>
                         <p class="text-slate-600 text-sm line-clamp-2">Multi-camera concert edit with crowd-synced cuts and atmospheric lighting.</p>
                     </div>
-                </div>
+                </a>
 
                 <!-- Project 6 -->
                 <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
