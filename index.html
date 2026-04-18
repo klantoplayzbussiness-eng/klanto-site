@@ -3,25 +3,14 @@
 <head>
     <!-- Force HTTPS on GitHub Pages -->
     <script>
-        (function() {
-            var host = window.location.hostname;
-            var protocol = window.location.protocol;
-            if (protocol === 'http:' && (host.endsWith('.github.io') || host === 'localhost')) {
-                window.location.href = window.location.href.replace(/^http:/, 'https:');
-            }
-        })();
+        if (window.location.protocol === 'http:' && window.location.hostname.endsWith('.github.io')) {
+            window.location.href = window.location.href.replace(/^http:/, 'https:');
+        }
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- CRITICAL: Prevent mixed content -->
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; media-src 'self' https:; frame-src https://www.youtube.com https://youtube.com; connect-src 'self' https:;">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <title>KlantoPlayz | Professional Video Editor</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -337,7 +326,7 @@
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
                             <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-sky-600 ml-1"></i>
+                                <i data-lucide="external-link" class="w-6 h-6 text-sky-600"></i>
                             </div>
                         </div>
                         <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
@@ -368,7 +357,7 @@
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
                             <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-purple-600 ml-1"></i>
+                                <i data-lucide="external-link" class="w-6 h-6 text-purple-600"></i>
                             </div>
                         </div>
                         <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
@@ -399,7 +388,7 @@
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
                             <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-pink-600 ml-1"></i>
+                                <i data-lucide="external-link" class="w-6 h-6 text-pink-600"></i>
                             </div>
                         </div>
                         <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
@@ -430,7 +419,7 @@
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
                             <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-sky-600 ml-1"></i>
+                                <i data-lucide="external-link" class="w-6 h-6 text-sky-600"></i>
                             </div>
                         </div>
                         <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
@@ -461,7 +450,7 @@
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
                             <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-purple-600 ml-1"></i>
+                                <i data-lucide="external-link" class="w-6 h-6 text-purple-600"></i>
                             </div>
                         </div>
                         <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
@@ -492,7 +481,7 @@
                              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
                             <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-pink-600 ml-1"></i>
+                                <i data-lucide="external-link" class="w-6 h-6 text-pink-600"></i>
                             </div>
                         </div>
                         <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
@@ -851,37 +840,7 @@
         </div>
     </footer>
 
-    <!-- Video Modal -->
-    <div id="video-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/95 backdrop-blur-sm transition-opacity" onclick="closeVideoModal()"></div>
-        <div class="relative w-full max-w-5xl bg-black rounded-2xl overflow-hidden shadow-2xl transform transition-all">
-            <!-- Close Button -->
-            <button onclick="closeVideoModal()" class="absolute -top-12 right-0 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-all z-10">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
-
-            <!-- Video Container -->
-            <div class="relative aspect-video bg-black">
-                <iframe id="modal-video-frame" src="" width="100%" height="100%" frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        referrerpolicy="strict-origin-when-cross-origin" 
-                        allowfullscreen 
-                        class="absolute inset-0 w-full h-full" 
-                        sandbox="allow-scripts allow-same-origin allow-presentation" 
-                        loading="lazy"
-                        title="YouTube Video Player"></iframe>
-            </div>
-
-            <!-- Mobile Fallback Notice -->
-            <div id="mobile-fallback" class="hidden p-4 bg-slate-800 text-center">
-                <p class="text-white text-sm mb-2">If video doesn't play, watch on YouTube:</p>
-                <a id="direct-video-link" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-                    Open on YouTube
-                </a>
-            </div>
-        </div>
-    </div>
+    <!-- Video modal removed - using direct YouTube links instead -->
 
     <script>
         // Initialize Lucide Icons
@@ -964,52 +923,16 @@
 
         // Video Modal Functions (Standard YouTube Embed)
         function openVideoModal(videoId) {
-            const modal = document.getElementById('video-modal');
-            const iframe = document.getElementById('modal-video-frame');
-            const fallback = document.getElementById('mobile-fallback');
-            const directLink = document.getElementById('direct-video-link');
-
-            // Enhanced security: Use privacy-enhanced mode and force HTTPS
-            iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1&origin=${encodeURIComponent(window.location.origin)}`;
-
-            // Direct YouTube link for fallback
-            directLink.href = `https://www.youtube.com/watch?v=${videoId}`;
-
-            // Show modal
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
-
-            // Show mobile fallback on touch devices
-            if (window.matchMedia('(pointer: coarse)').matches) {
-                fallback.classList.remove('hidden');
-            }
-
-            // Re-initialize icons
-            lucide.createIcons();
+            // Open YouTube video directly in new tab - more reliable than iframe embeds
+            window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank', 'noopener,noreferrer');
         }
 
         function closeVideoModal() {
-            const modal = document.getElementById('video-modal');
-            const iframe = document.getElementById('modal-video-frame');
-            const fallback = document.getElementById('mobile-fallback');
-
-            // Stop video by clearing src
-            iframe.src = '';
-
-            // Hide modal
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.style.overflow = 'auto';
-            fallback.classList.add('hidden');
+            // Modal removed - videos now open directly in YouTube
+            console.log('Video modal removed - using direct YouTube links');
         }
 
-        //// Close modal on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeVideoModal();
-            }
-        });
+        // Escape key handler (modal removed - videos open in new tab)
     </script>
 </body>
 </html>
