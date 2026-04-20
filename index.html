@@ -112,7 +112,7 @@
         
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-10px); }
         }
         
         .grain {
@@ -200,6 +200,52 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+    
+
+        /* Fix floating badge text overlap */
+        .floating {
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Ensure hero text stays above floating elements */
+        .relative.z-10 {
+            z-index: 10;
+        }
+
+        /* Fix skill bar initial state */
+        .skill-bar {
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    
+
+        /* Fix text overlap in hero section */
+        .relative.lg\:h-\[600px\] > .absolute {
+            z-index: 30 !important;
+        }
+
+        /* Ensure floating cards are above everything */
+        .absolute.-top-6,
+        .absolute.-bottom-6 {
+            z-index: 30 !important;
+            background: white !important;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15) !important;
+        }
+
+        /* Contain the hero image text overlay */
+        .aspect-\[3\/4\] .absolute.bottom-6 {
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        /* Ensure the image container clips overflowing content */
+        .aspect-\[3\/4\] {
+            overflow: hidden !important;
+            isolation: isolate;
         }
     </style>
     <!-- Security (HTTPS-ready) -->
@@ -637,7 +683,7 @@
                     <h4 class="text-xl font-bold text-slate-900 mb-2">Video Editing</h4>
                     <p class="text-slate-600 text-sm mb-4">Precision cutting, pacing, and rhythm synchronization</p>
                     <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-sky-500 h-2 rounded-full" style="width: 0%" data-width="95%"></div>
+                        <div class="skill-bar bg-sky-500 h-2 rounded-full" data-width="95%"></div>
                     </div>
                     <span class="text-xs text-slate-500 mt-2 inline-block">95% Proficiency</span>
                 </div>
@@ -650,7 +696,7 @@
                     <h4 class="text-xl font-bold text-slate-900 mb-2">Color Grading</h4>
                     <p class="text-slate-600 text-sm mb-4">Cinematic LUTs, color correction, and mood enhancement</p>
                     <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-purple-500 h-2 rounded-full" style="width: 0%" data-width="90%"></div>
+                        <div class="skill-bar bg-purple-500 h-2 rounded-full" data-width="90%"></div>
                     </div>
                     <span class="text-xs text-slate-500 mt-2 inline-block">90% Proficiency</span>
                 </div>
@@ -663,7 +709,7 @@
                     <h4 class="text-xl font-bold text-slate-900 mb-2">Motion Graphics</h4>
                     <p class="text-slate-600 text-sm mb-4">Text animations, lower thirds, and visual effects</p>
                     <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-pink-500 h-2 rounded-full" style="width: 0%" data-width="85%"></div>
+                        <div class="skill-bar bg-pink-500 h-2 rounded-full" data-width="85%"></div>
                     </div>
                     <span class="text-xs text-slate-500 mt-2 inline-block">85% Proficiency</span>
                 </div>
@@ -676,7 +722,7 @@
                     <h4 class="text-xl font-bold text-slate-900 mb-2">Sound Design</h4>
                     <p class="text-slate-600 text-sm mb-4">Audio mixing, SFX integration, and music synchronization</p>
                     <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-cyan-500 h-2 rounded-full" style="width: 0%" data-width="88%"></div>
+                        <div class="skill-bar bg-cyan-500 h-2 rounded-full" data-width="88%"></div>
                     </div>
                     <span class="text-xs text-slate-500 mt-2 inline-block">88% Proficiency</span>
                 </div>
@@ -689,7 +735,7 @@
                     <h4 class="text-xl font-bold text-slate-900 mb-2">Social Optimization</h4>
                     <p class="text-slate-600 text-sm mb-4">Platform-specific formats, captions, and engagement hooks</p>
                     <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-indigo-500 h-2 rounded-full" style="width: 0%" data-width="92%"></div>
+                        <div class="skill-bar bg-indigo-500 h-2 rounded-full" data-width="92%"></div>
                     </div>
                     <span class="text-xs text-slate-500 mt-2 inline-block">92% Proficiency</span>
                 </div>
@@ -702,7 +748,7 @@
                     <h4 class="text-xl font-bold text-slate-900 mb-2">Fast Delivery</h4>
                     <p class="text-slate-600 text-sm mb-4">Efficient workflow management and quick turnaround times</p>
                     <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-emerald-500 h-2 rounded-full" style="width: 0%" data-width="96%"></div>
+                        <div class="skill-bar bg-emerald-500 h-2 rounded-full" data-width="96%"></div>
                     </div>
                     <span class="text-xs text-slate-500 mt-2 inline-block">96% Proficiency</span>
                 </div>
@@ -894,6 +940,40 @@
     
 
     <script>
+        // Skill Bar Animation
+        const skillBars = document.querySelectorAll('.skill-bar');
+        const skillsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const bar = entry.target;
+                    const width = bar.getAttribute('data-width');
+                    bar.style.width = width;
+                    skillsObserver.unobserve(bar);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        skillBars.forEach(bar => skillsObserver.observe(bar));
+
+        // GSAP ScrollTrigger for skill bars (if GSAP is loaded)
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+
+            skillBars.forEach(bar => {
+                const targetWidth = bar.getAttribute('data-width');
+                gsap.to(bar, {
+                    width: targetWidth,
+                    duration: 1.5,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: bar,
+                        start: 'top 85%',
+                        once: true
+                    }
+                });
+            });
+        }
+
         // Initialize Lucide Icons
         lucide.createIcons();
 
