@@ -1,662 +1,498 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <!-- Force HTTPS on GitHub Pages -->
-    <script>
-        (function() {
-            var host = window.location.hostname;
-            var protocol = window.location.protocol;
-            if (protocol === 'http:' && (host.endsWith('.github.io') || host === 'localhost')) {
-                window.location.href = window.location.href.replace(/^http:/, 'https:');
-            }
-        })();
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- CRITICAL: Prevent mixed content -->
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests; default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; media-src 'self' https:; frame-src https://www.youtube.com https://youtube.com; connect-src 'self' https:;">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <title>KlantoPlayz | Professional Video Editor</title>
+    <title>KlantoPlayz | Video Editor & Content Creator</title>
+    <meta name="description" content="Professional video editor specializing in gaming content, vlogs, and cinematic edits.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'display': ['Space Grotesk', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'neon': '#00F0FF',
+                        'neon-dim': 'rgba(0, 240, 255, 0.1)',
+                        'neon-purple': '#B829F7',
+                        'dark': '#0A0A0F',
+                        'dark-card': '#12121A',
+                        'dark-border': '#1E1E2E',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --sky-primary: #0EA5E9;
-            --sky-dark: #0284C7;
-            --sky-light: #E0F2FE;
-            --sky-gradient: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 50%, #7DD3FC 100%);
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F8FAFC;
-            overflow-x: hidden;
-        }
-        
-        .font-display {
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .sky-gradient-text {
-            background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .sky-gradient-bg {
-            background: linear-gradient(135deg, #0EA5E9 0%, #38BDF8 50%, #7DD3FC 100%);
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .hover-lift {
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-        }
-        
-        .hover-lift:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px -15px rgba(14, 165, 233, 0.3);
-        }
-        
-        .video-overlay {
-            background: linear-gradient(to top, rgba(2, 132, 199, 0.9) 0%, transparent 100%);
-        }
-        
-        .play-button {
-            transition: all 0.3s ease;
-        }
-        
-        .play-button:hover {
-            transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.95);
-        }
-        
-        .nav-link {
-            position: relative;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -4px;
-            left: 0;
-            background: var(--sky-primary);
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        
-        .skill-bar {
-            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .grain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-        
-        .custom-cursor {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #0EA5E9;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.2s ease, background 0.2s ease;
-            mix-blend-mode: difference;
-        }
-        
-        .custom-cursor.hover {
-            transform: scale(2);
-            background: rgba(14, 165, 233, 0.3);
-        }
-        
-        .timeline-line {
-            background: linear-gradient(to bottom, #0EA5E9, #38BDF8);
-        }
-        
-        .reveal-text {
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
-        }
-        
-        .project-card:hover .project-info {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        .project-info {
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all 0.4s ease;
-        }
-    
-
-        /* Fix for anchor tag project cards */
-        a.project-card {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        a.project-card:hover {
-            color: inherit;
-        }
-
-        a.project-card * {
-            pointer-events: none;
-        }
-    
-
-        /* Fix image sizing in project cards */
-        .project-card img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .project-card .aspect-video {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .project-card .aspect-video img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    
-
-        /* Fix floating badge text overlap */
-        .floating {
-            z-index: 20;
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        /* Ensure hero text stays above floating elements */
-        .relative.z-10 {
-            z-index: 10;
-        }
-
-        /* Fix skill bar initial state */
-        .skill-bar {
-            width: 0%;
-            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-    
-
-        /* Fix text overlap in hero section */
-        .relative.lg\:h-\[600px\] > .absolute {
-            z-index: 30 !important;
-        }
-
-        /* Ensure floating cards are above everything */
-        .absolute.-top-6,
-        .absolute.-bottom-6 {
-            z-index: 30 !important;
-            background: white !important;
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15) !important;
-        }
-
-        /* Contain the hero image text overlay */
-        .aspect-\[3\/4\] .absolute.bottom-6 {
-            z-index: 15;
-            pointer-events: none;
-        }
-
-        /* Ensure the image container clips overflowing content */
-        .aspect-\[3\/4\] {
-            overflow: hidden !important;
-            isolation: isolate;
-        }
+        :root { --neon: #00F0FF; --neon-purple: #B829F7; --dark: #0A0A0F; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--dark); color: #E2E8F0; overflow-x: hidden; }
+        .font-display { font-family: 'Space Grotesk', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0A0A0F; }
+        ::-webkit-scrollbar-thumb { background: #1E1E2E; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00F0FF; }
+        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+        .neon-text { color: #00F0FF; text-shadow: 0 0 20px rgba(0, 240, 255, 0.3), 0 0 40px rgba(0, 240, 255, 0.1); }
+        .neon-border { border: 1px solid rgba(0, 240, 255, 0.2); box-shadow: 0 0 20px rgba(0, 240, 255, 0.05), inset 0 0 20px rgba(0, 240, 255, 0.02); }
+        .hero-mesh { background: radial-gradient(ellipse at 20% 50%, rgba(0, 240, 255, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(184, 41, 247, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, rgba(0, 240, 255, 0.04) 0%, transparent 50%); }
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .glitch::before { animation: glitch-1 3s infinite linear alternate-reverse; color: #00F0FF; z-index: -1; }
+        .glitch::after { animation: glitch-2 2s infinite linear alternate-reverse; color: #B829F7; z-index: -2; }
+        @keyframes glitch-1 { 0%,100%{clip-path:inset(0 0 95% 0);transform:translate(-2px,0)} 20%{clip-path:inset(30% 0 50% 0);transform:translate(2px,0)} 40%{clip-path:inset(80% 0 5% 0);transform:translate(-1px,0)} 60%{clip-path:inset(10% 0 70% 0);transform:translate(1px,0)} 80%{clip-path:inset(50% 0 30% 0);transform:translate(-2px,0)} }
+        @keyframes glitch-2 { 0%,100%{clip-path:inset(95% 0 0 0);transform:translate(2px,0)} 20%{clip-path:inset(50% 0 30% 0);transform:translate(-2px,0)} 40%{clip-path:inset(5% 0 80% 0);transform:translate(1px,0)} 60%{clip-path:inset(70% 0 10% 0);transform:translate(-1px,0)} 80%{clip-path:inset(30% 0 50% 0);transform:translate(2px,0)} }
+        .project-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; display: block; text-decoration: none; color: inherit; }
+        .project-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, transparent 50%); opacity: 0; transition: opacity 0.4s ease; z-index: 1; pointer-events: none; }
+        .project-card:hover::before { opacity: 1; }
+        .project-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -15px rgba(0, 240, 255, 0.15); border-color: rgba(0, 240, 255, 0.3); }
+        .project-card img { transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .project-card:hover img { transform: scale(1.05); }
+        .skill-track { background: rgba(255, 255, 255, 0.05); border-radius: 999px; overflow: hidden; }
+        .skill-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #00F0FF, #B829F7); width: 0%; transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .skill-fill::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 20px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3)); border-radius: 0 999px 999px 0; }
+        .magnetic-btn { position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .magnetic-btn::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(0, 240, 255, 0.2); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s ease, height 0.6s ease; }
+        .magnetic-btn:hover::before { width: 300px; height: 300px; }
+        .nav-link { position: relative; overflow: hidden; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: #00F0FF; transition: width 0.3s ease; box-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+        .nav-link:hover::after { width: 100%; }
+        .gradient-text { background: linear-gradient(135deg, #00F0FF 0%, #B829F7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .grid-lines { background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px); background-size: 60px 60px; }
+        .stat-number { font-variant-numeric: tabular-nums; }
+        @keyframes pulse-ring { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.5); opacity: 0; } }
+        .play-pulse::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid rgba(0, 240, 255, 0.5); animation: pulse-ring 2s infinite; }
     </style>
-    <!-- Security (HTTPS-ready) -->
-    <!-- NOTE: Add HTTPS/SSL certificate to your hosting for full security -->
-    <meta name="referrer" content="strict-origin-when-cross-origin">
 
-<base target="_blank">
-<base target="_blank">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 <base target="_blank">
 </head>
-<body class="text-slate-800 antialiased selection:bg-sky-200 selection:text-sky-900">
-
-    <!-- Grain Overlay -->
-    <div class="grain"></div>
-    
-    <!-- Custom Cursor -->
-    <div class="custom-cursor hidden md:block" id="cursor"></div>
-
-    <!-- Navigation -->
-    <nav class="fixed w-full z-40 top-0 transition-all duration-300" id="navbar">
+<body class="antialiased">
+    <div class="noise"></div>
+    <nav id="navbar" class="fixed w-full z-50 top-0 transition-all duration-500">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
-                <div class="flex-shrink-0 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <span class="text-2xl font-bold tracking-tighter text-slate-900">
-                        Klanto<span class="text-sky-500">Playz</span>
-                    </span>
+                <a href="#" class="font-display text-2xl font-bold tracking-tight"><span class="text-white">Klanto</span><span class="neon-text">Playz</span></a>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#work" onclick="event.preventDefault(); document.getElementById('work').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="nav-link text-sm text-gray-400 hover:text-white transition-colors">Work</a>
+                    <a href="#about" onclick="event.preventDefault(); document.getElementById('about').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="nav-link text-sm text-gray-400 hover:text-white transition-colors">About</a>
+                    <a href="#skills" onclick="event.preventDefault(); document.getElementById('skills').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="nav-link text-sm text-gray-400 hover:text-white transition-colors">Skills</a>
+                    <a href="#contact" onclick="event.preventDefault(); document.getElementById('contact').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="magnetic-btn px-6 py-2.5 text-sm font-medium text-dark bg-neon rounded-full hover:shadow-[0_0_30px_rgba(0,240,255,0.3)] transition-all">Contact</a>
                 </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#home" class="nav-link text-slate-700 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors">Home</a>
-                        <a href="#work" class="nav-link text-slate-700 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors">Work</a>
-                        <a href="#about" class="nav-link text-slate-700 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors">About</a>
-                        <a href="#skills" class="nav-link text-slate-700 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors">Skills</a>
-                        <a href="#contact" class="bg-sky-500 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-sky-600 transition-all hover:shadow-lg hover:shadow-sky-500/30">Contact</a>
-                    </div>
-                </div>
-                <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-slate-700 hover:text-sky-600 p-2">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
-                    </button>
-                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-white p-2"><i data-lucide="menu" class="w-6 h-6"></i></button>
             </div>
         </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-lg border-t border-slate-200">
-            <div class="px-4 pt-2 pb-6 space-y-1">
-                <a href="#home" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 rounded-md">Home</a>
-                <a href="#work" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 rounded-md">Work</a>
-                <a href="#about" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 rounded-md">About</a>
-                <a href="#skills" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-sky-600 hover:bg-sky-50 rounded-md">Skills</a>
-                <a href="#contact" class="block px-3 py-3 text-base font-medium text-sky-600 font-semibold">Contact Me</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-dark-card/95 backdrop-blur-xl border-t border-dark-border">
+            <div class="px-6 py-6 space-y-4">
+                <a href="#work" onclick="event.preventDefault(); document.getElementById('work').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="block text-gray-400 hover:text-neon transition-colors">Work</a>
+                <a href="#about" onclick="event.preventDefault(); document.getElementById('about').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="block text-gray-400 hover:text-neon transition-colors">About</a>
+                <a href="#skills" onclick="event.preventDefault(); document.getElementById('skills').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="block text-gray-400 hover:text-neon transition-colors">Skills</a>
+                <a href="#contact" onclick="event.preventDefault(); document.getElementById('contact').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="block text-neon font-medium">Contact Me</a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        <!-- Background Elements -->
-        <div class="absolute inset-0 z-0">
-            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-sky-50 via-white to-blue-50"></div>
-            <div class="absolute top-20 right-0 w-96 h-96 bg-sky-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
-            <div class="absolute bottom-20 left-20 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-            <div class="absolute top-40 left-1/3 w-64 h-64 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 floating"></div>
+    <section class="relative min-h-screen flex items-center hero-mesh overflow-hidden">
+        <div class="absolute inset-0">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-neon/5 rounded-full blur-[100px]"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-neon-purple/5 rounded-full blur-[100px]"></div>
         </div>
-
-        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
-            <div class="space-y-8 text-center lg:text-left">
-                <div class="inline-flex items-center px-4 py-2 rounded-full bg-sky-100 text-sky-700 text-sm font-medium mb-4 border border-sky-200">
-                    <span class="flex h-2 w-2 rounded-full bg-sky-500 mr-2 animate-pulse"></span>
-                    Available for Freelance Work
-                </div>
-                <h1 class="text-5xl lg:text-7xl font-bold tracking-tight text-slate-900 leading-tight">
-                    Crafting Visual <br>
-                    <span class="sky-gradient-text font-display italic">Stories</span> That Move
-                </h1>
-                <p class="text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                    Professional video editor with 2+ years of experience transforming raw footage into compelling narratives. Specializing in cinematic color grading, seamless transitions, and rhythm-driven editing.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <a href="#work" class="group inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white bg-sky-500 rounded-full hover:bg-sky-600 transition-all hover:shadow-xl hover:shadow-sky-500/30 hover:-translate-y-1">
-                        View My Work
-                        <i data-lucide="arrow-right" class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-                    </a>
-                    <a href="#contact" class="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-sky-600 bg-white border-2 border-sky-200 rounded-full hover:border-sky-500 hover:bg-sky-50 transition-all">
-                        Get in Touch
-                    </a>
-                </div>
-                <div class="flex items-center justify-center lg:justify-start gap-8 pt-4 text-slate-500 text-sm">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="check-circle" class="w-4 h-4 text-sky-500"></i>
-                        <span>50+ Projects</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="check-circle" class="w-4 h-4 text-sky-500"></i>
-                        <span>2 Years Exp.</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="check-circle" class="w-4 h-4 text-sky-500"></i>
-                        <span>4K Specialist</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Hero Video Preview -->
-            <div class="relative lg:h-[600px] flex items-center justify-center">
-                <div class="relative w-full max-w-lg aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl shadow-sky-500/20">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent z-10"></div>
-                    <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=1000&fit=crop" alt="Video Editing Setup" class="w-full h-full object-cover">
-                    <div class="absolute bottom-6 left-6 right-6 z-20 text-white">
-                        <p class="text-sm font-medium text-sky-300 mb-1">2024 Showreel</p>
-                        <h3 class="text-xl font-bold">Best of KlantoPlayz</h3>
-                    </div>
-                </div>
-                <!-- Floating Elements -->
-                <div class="absolute -top-6 -right-6 bg-white p-4 rounded-xl shadow-lg floating" style="animation-delay: 0.5s;">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center">
-                            <i data-lucide="film" class="w-6 h-6 text-sky-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500">Projects</p>
-                            <p class="text-lg font-bold text-slate-900">50+</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg floating" style="animation-delay: 1s;">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center">
-                            <i data-lucide="award" class="w-6 h-6 text-sky-600"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-500">Experience</p>
-                            <p class="text-lg font-bold text-slate-900">2 Years</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <i data-lucide="chevron-down" class="w-6 h-6 text-sky-400"></i>
-        </div>
-    </section>
-
-    <!-- Selected Work Section -->
-    <section id="work" class="py-24 bg-white relative">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-sm font-semibold text-sky-600 tracking-wide uppercase mb-2">Portfolio</h2>
-                <h3 class="text-4xl font-bold text-slate-900 mb-4">Selected Works</h3>
-                <p class="text-slate-600 max-w-2xl mx-auto">A curated collection of projects showcasing editing techniques, color grading, and storytelling across various genres.</p>
-            </div>
-
-            <!-- Filter Buttons -->
-            <div class="flex flex-wrap justify-center gap-3 mb-12">
-                <button class="filter-btn active px-6 py-2 rounded-full text-sm font-medium bg-sky-500 text-white transition-all" data-filter="all">All</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-sky-100 hover:text-sky-600 transition-all" data-filter="commercial">Gaming Videos</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-sky-100 hover:text-sky-600 transition-all" data-filter="music">Vlog Edits</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium bg-slate-100 text-slate-600 hover:bg-sky-100 hover:text-sky-600 transition-all" data-filter="social">Reel Edits</button>
-            </div>
-
-            <!-- Projects Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
-                <!-- Project 1 -->
-                <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
-                     data-category="commercial" 
-                     href="https://www.youtube.com/watch?v=eM8xBBNiseo" target="_blank" rel="noopener noreferrer">
-                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
-                        <img src="https://img.youtube.com/vi/eM8xBBNiseo/hqdefault.jpg" 
-                             onerror="this.src='https://img.youtube.com/vi/eM8xBBNiseo/mqdefault.jpg'; this.onerror=null;" 
-                             loading="lazy" 
-                             alt="Foreign Gaming Edit" 
-                             onerror="this.src='https://img.youtube.com/vi/eM8xBBNiseo/hqdefault.jpg'"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-sky-600 ml-1"></i>
-                            </div>
-                        </div>
-                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                            Watch
-                        </div>
-                    </div>
-                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full">Gaming Videos</span>
-                            <span class="text-xs text-slate-400">2024</span>
-                        </div>
-                        <h4 class="text-xl font-bold text-slate-900 mb-2">Foreign Gaming Edit</h4>
-                        <p class="text-slate-600 text-sm line-clamp-2">Foreign gaming school runaway edit, recorded and edited by me.</p>
-                    </div>
-                </a>
-
-                <!-- Project 2 -->
-                <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
-                     data-category="music" 
-                     href="https://www.youtube.com/watch?v=AhHEsNZLueM" target="_blank" rel="noopener noreferrer">
-                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
-                        <img src="https://img.youtube.com/vi/AhHEsNZLueM/hqdefault.jpg" 
-                             onerror="this.src='https://img.youtube.com/vi/AhHEsNZLueM/mqdefault.jpg'; this.onerror=null;" 
-                             loading="lazy" 
-                             alt="Ducky Bhai Vlog" 
-                             onerror="this.src='https://img.youtube.com/vi/AhHEsNZLueM/hqdefault.jpg'"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-purple-600 ml-1"></i>
-                            </div>
-                        </div>
-                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                            Watch
-                        </div>
-                    </div>
-                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">Vlog Edit</span>
-                            <span class="text-xs text-slate-400">2024</span>
-                        </div>
-                        <h4 class="text-xl font-bold text-slate-900 mb-2">Ducky Bhai Vlog</h4>
-                        <p class="text-slate-600 text-sm line-clamp-2">Cinematic music video editing with synchronized beat cuts and neon color palette.</p>
-                    </div>
-                </a>
-
-                <!-- Project 3 -->
-                <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
-                     data-category="social" 
-                     href="https://www.youtube.com/watch?v=VLVYnQtgM4U" target="_blank" rel="noopener noreferrer">
-                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
-                        <img src="https://img.youtube.com/vi/VLVYnQtgM4U/hqdefault.jpg" 
-                             onerror="this.src='https://img.youtube.com/vi/VLVYnQtgM4U/mqdefault.jpg'; this.onerror=null;" 
-                             loading="lazy" 
-                             alt="Viral Short" 
-                             onerror="this.src='https://img.youtube.com/vi/VLVYnQtgM4U/hqdefault.jpg'"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-pink-600 ml-1"></i>
-                            </div>
-                        </div>
-                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                            Watch
-                        </div>
-                    </div>
-                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-pink-600 bg-pink-50 px-3 py-1 rounded-full">Reel Edits</span>
-                            <span class="text-xs text-slate-400">2023</span>
-                        </div>
-                        <h4 class="text-xl font-bold text-slate-900 mb-2">Viral Short</h4>
-                        <p class="text-slate-600 text-sm line-clamp-2">High-engagement vertical video content optimized for TikTok and Instagram Reels.</p>
-                    </div>
-                </a>
-
-                <!-- Project 4 -->
-                <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
-                     data-category="commercial" 
-                     href="https://www.youtube.com/watch?v=TiZVRT4Yg3M" target="_blank" rel="noopener noreferrer">
-                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
-                        <img src="https://img.youtube.com/vi/TiZVRT4Yg3M/hqdefault.jpg" 
-                             onerror="this.src='https://img.youtube.com/vi/TiZVRT4Yg3M/mqdefault.jpg'; this.onerror=null;" 
-                             loading="lazy" 
-                             alt="Minecraft Edit" 
-                             onerror="this.src='https://img.youtube.com/vi/TiZVRT4Yg3M/hqdefault.jpg'"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-sky-600 ml-1"></i>
-                            </div>
-                        </div>
-                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                            Watch
-                        </div>
-                    </div>
-                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full">Gaming Videos</span>
-                            <span class="text-xs text-slate-400">2023</span>
-                        </div>
-                        <h4 class="text-xl font-bold text-slate-900 mb-2">Minecraft Edit</h4>
-                        <p class="text-slate-600 text-sm line-clamp-2">Minecraft edit inspired by an Indian YouTuber, recorded and edited by me.</p>
-                    </div>
-                </a>
-
-                <!-- Project 5 -->
-                <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
-                     data-category="music" 
-                     href="https://www.youtube.com/watch?v=uwl6CvYiWTQ" target="_blank" rel="noopener noreferrer">
-                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
-                        <img src="https://img.youtube.com/vi/uwl6CvYiWTQ/hqdefault.jpg" 
-                             onerror="this.src='https://img.youtube.com/vi/uwl6CvYiWTQ/mqdefault.jpg'; this.onerror=null;" 
-                             loading="lazy" 
-                             alt="Rajab But Vlog" 
-                             onerror="this.src='https://img.youtube.com/vi/uwl6CvYiWTQ/hqdefault.jpg'"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-purple-600 ml-1"></i>
-                            </div>
-                        </div>
-                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                            Watch
-                        </div>
-                    </div>
-                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">Vlog Edit</span>
-                            <span class="text-xs text-slate-400">2023</span>
-                        </div>
-                        <h4 class="text-xl font-bold text-slate-900 mb-2">Rajab But Vlog</h4>
-                        <p class="text-slate-600 text-sm line-clamp-2">Multi-camera concert edit with crowd-synced cuts and atmospheric lighting.</p>
-                    </div>
-                </a>
-
-                <!-- Project 6 -->
-                <a class="project-card group relative overflow-hidden rounded-2xl cursor-pointer hover-lift bg-white shadow-lg block" 
-                     data-category="social" 
-                     href="https://www.youtube.com/watch?v=Ri1Fdh3MHHk" target="_blank" rel="noopener noreferrer">
-                    <div class="aspect-video bg-slate-900 relative overflow-hidden">
-                        <img src="https://img.youtube.com/vi/Ri1Fdh3MHHk/hqdefault.jpg" 
-                             onerror="this.src='https://img.youtube.com/vi/Ri1Fdh3MHHk/mqdefault.jpg'; this.onerror=null;" 
-                             loading="lazy" 
-                             alt="Promotional short" 
-                             onerror="this.src='https://img.youtube.com/vi/Ri1Fdh3MHHk/hqdefault.jpg'"
-                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-all flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center play-button shadow-lg">
-                                <i data-lucide="play" class="w-6 h-6 text-pink-600 ml-1"></i>
-                            </div>
-                        </div>
-                        <div class="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-                            <i data-lucide="external-link" class="w-3 h-3"></i>
-                            Watch
-                        </div>
-                    </div>
-                    <div class="p-6 border border-slate-100 border-t-0 rounded-b-2xl">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold text-pink-600 bg-pink-50 px-3 py-1 rounded-full">Reel Edits</span>
-                            <span class="text-xs text-slate-400">2022</span>
-                        </div>
-                        <h4 class="text-xl font-bold text-slate-900 mb-2">Promotional short</h4>
-                        <p class="text-slate-600 text-sm line-clamp-2">A promotional server setup video recorded and edited by our company, highlighting performance and quality</p>
-                    </div>
-            </a>
-
-            </div>
-        </div>
-    </section><!-- About Section -->
-    <section id="about" class="py-24 bg-slate-50 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-sky-100/50 to-transparent"></div>
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 pt-32 pb-20">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
-                <div class="relative">
-                    <div class="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl shadow-sky-500/10">
-                        <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=1000&fit=crop" alt="KlantoPlayz Editing Setup" class="w-full h-full object-cover">
+                <div class="space-y-8">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neon-dim border border-neon/20">
+                        <span class="w-2 h-2 rounded-full bg-neon animate-pulse"></span>
+                        <span class="text-xs font-medium text-neon tracking-wide uppercase">Available for Work</span>
                     </div>
-                    <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-xl max-w-xs">
-                        <div class="flex items-center gap-4 mb-3">
-                            <div class="flex -space-x-2">
-                                <div class="w-10 h-10 rounded-full bg-sky-500 flex items-center justify-center text-white text-xs font-bold">Pr</div>
-                                <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs font-bold">Ae</div>
-                                <div class="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white text-xs font-bold">Da</div>
-                            </div>
-                        </div>
-                        <p class="text-sm font-semibold text-slate-900">Adobe Creative Suite Expert</p>
-                        <p class="text-xs text-slate-500 mt-1">Professional workflow optimization</p>
+                    <h1 class="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.9] tracking-tight">
+                        <span class="block text-white">Video</span>
+                        <span class="block gradient-text glitch" data-text="Editor">Editor</span>
+                    </h1>
+                    <p class="text-lg text-gray-400 max-w-lg leading-relaxed">Crafting high-energy gaming edits, cinematic vlogs, and viral short-form content. 2+ years of turning raw footage into stories that captivate.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#work" onclick="event.preventDefault(); document.getElementById('work').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="magnetic-btn group inline-flex items-center gap-2 px-8 py-4 bg-neon text-dark font-semibold rounded-full hover:shadow-[0_0_40px_rgba(0,240,255,0.4)] transition-all">
+                            View Work<i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#contact" onclick="event.preventDefault(); document.getElementById('contact').scrollIntoView({behavior: 'smooth', block: 'start'}); return false;" class="inline-flex items-center gap-2 px-8 py-4 border border-dark-border text-white rounded-full hover:border-neon/50 hover:bg-neon-dim transition-all">Get in Touch</a>
+                    </div>
+                    <div class="flex items-center gap-6 pt-4 text-sm text-gray-500">
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-neon"></i><span>56+ Projects</span></div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-neon"></i><span>2 Years</span></div>
+                        <div class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-neon"></i><span>4K/60fps</span></div>
                     </div>
                 </div>
-                
-                <div class="space-y-6">
-                    <h2 class="text-sm font-semibold text-sky-600 tracking-wide uppercase">About Me</h2>
-                    <h3 class="text-4xl font-bold text-slate-900">KlantoPlayz</h3>
-                    <div class="space-y-4 text-slate-600 leading-relaxed">
-                        <p>
-                            With over 2 years of professional video editing experience, I've developed a keen eye for storytelling through motion. My journey began with gaming content creation, which evolved into a passion for cinematic editing and color grading.
-                        </p>
-                        <p>
-                            I specialize in creating engaging content across multiple platforms—from high-energy TikToks to polished commercial advertisements. My editing style emphasizes rhythm, emotional pacing, and visual coherence that keeps viewers engaged from the first frame to the last.
-                        </p>
-                        <p>
-                            Whether it's syncing cuts to music beats, crafting seamless transitions, or applying cinematic color grades, I bring technical precision and creative flair to every project.
-                        </p>
+                <div class="relative">
+                    <div class="relative aspect-[4/5] max-w-md mx-auto rounded-2xl overflow-hidden neon-border">
+                        <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=1000&fit=crop&q=80" alt="Editing Setup" class="w-full h-full object-cover opacity-80">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/20 to-transparent"></div>
+                        <div class="absolute bottom-8 left-8 right-8">
+                            <p class="text-neon text-sm font-medium mb-2">2024 Showreel</p>
+                            <h3 class="text-2xl font-display font-bold text-white">Best of KlantoPlayz</h3>
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <a href="https://youtube.com/@klantoplayz" target="_blank" rel="noopener noreferrer" class="play-pulse relative w-16 h-16 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/20 hover:bg-neon hover:border-neon transition-all group">
+                                <i data-lucide="play" class="w-6 h-6 text-white group-hover:text-dark ml-1"></i>
+                            </a>
+                        </div>
                     </div>
-                    
-                    <!-- Timeline -->
-                    <div class="mt-8 space-y-6">
+                    <div class="absolute -top-4 -right-4 bg-dark-card border border-dark-border rounded-xl p-4 shadow-xl z-20">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-neon-dim flex items-center justify-center"><i data-lucide="film" class="w-5 h-5 text-neon"></i></div>
+                            <div><p class="text-xs text-gray-500">Projects</p><p class="text-lg font-bold text-white">56+</p></div>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-4 -left-4 bg-dark-card border border-dark-border rounded-xl p-4 shadow-xl z-20">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-neon-purple/10 flex items-center justify-center"><i data-lucide="award" class="w-5 h-5 text-neon-purple"></i></div>
+                            <div><p class="text-xs text-gray-500">Experience</p><p class="text-lg font-bold text-white">2 Years</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+            <span class="text-xs text-gray-600 uppercase tracking-widest">Scroll</span>
+            <div class="w-px h-8 bg-gradient-to-b from-neon to-transparent"></div>
+        </div>
+    </section>
+
+    <section id="work" class="py-32 relative grid-lines">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
+                <div>
+                    <p class="text-neon text-sm font-medium tracking-widest uppercase mb-4">Portfolio</p>
+                    <h2 class="font-display text-4xl md:text-6xl font-bold text-white">Selected<br><span class="gradient-text">Works</span></h2>
+                </div>
+                <p class="text-gray-400 max-w-md">A curated collection of projects showcasing editing techniques, color grading, and storytelling across various genres.</p>
+            </div>
+            <div class="flex flex-wrap gap-3 mb-12">
+                <button class="filter-btn active px-6 py-2.5 rounded-full text-sm font-medium bg-neon text-dark transition-all" data-filter="all">All</button>
+                <button class="filter-btn px-6 py-2.5 rounded-full text-sm font-medium bg-dark-card border border-dark-border text-gray-400 hover:border-neon/30 hover:text-white transition-all" data-filter="gaming">Gaming</button>
+                <button class="filter-btn px-6 py-2.5 rounded-full text-sm font-medium bg-dark-card border border-dark-border text-gray-400 hover:border-neon/30 hover:text-white transition-all" data-filter="vlog">Vlogs</button>
+                <button class="filter-btn px-6 py-2.5 rounded-full text-sm font-medium bg-dark-card border border-dark-border text-gray-400 hover:border-neon/30 hover:text-white transition-all" data-filter="reel">Reels</button>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid">
+                <a href="https://www.youtube.com/watch?v=eM8xBBNiseo" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="gaming">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/eM8xBBNiseo/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/eM8xBBNiseo/mqdefault.jpg'; this.onerror=null;" alt="Foreign Gaming Edit" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-neon bg-neon-dim px-3 py-1 rounded-full">Gaming</span>
+                            <span class="text-xs text-gray-600">2024</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Foreign Gaming Edit</h3>
+                        <p class="text-gray-500 text-sm">Foreign gaming school runaway edit, recorded and edited by me.</p>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=AhHEsNZLueM" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="vlog">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/AhHEsNZLueM/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/AhHEsNZLueM/mqdefault.jpg'; this.onerror=null;" alt="Ducky Bhai Vlog" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-neon-purple bg-neon-purple/10 px-3 py-1 rounded-full">Vlog</span>
+                            <span class="text-xs text-gray-600">2024</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Ducky Bhai Vlog</h3>
+                        <p class="text-gray-500 text-sm">Cinematic music video editing with synchronized beat cuts and neon color palette.</p>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=VLVYnQtgM4U" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="reel">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/VLVYnQtgM4U/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/VLVYnQtgM4U/mqdefault.jpg'; this.onerror=null;" alt="Viral Short" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-pink-500 bg-pink-500/10 px-3 py-1 rounded-full">Reel</span>
+                            <span class="text-xs text-gray-600">2023</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Viral Short</h3>
+                        <p class="text-gray-500 text-sm">High-engagement vertical video content optimized for TikTok and Instagram Reels.</p>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=TiZVRT4Yg3M" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="gaming">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/TiZVRT4Yg3M/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/TiZVRT4Yg3M/mqdefault.jpg'; this.onerror=null;" alt="Minecraft Edit" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-neon bg-neon-dim px-3 py-1 rounded-full">Gaming</span>
+                            <span class="text-xs text-gray-600">2023</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Minecraft Edit</h3>
+                        <p class="text-gray-500 text-sm">Minecraft edit inspired by an Indian YouTuber, recorded and edited by me.</p>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=uwl6CvYiWTQ" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="vlog">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/uwl6CvYiWTQ/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/uwl6CvYiWTQ/mqdefault.jpg'; this.onerror=null;" alt="Rajab But Vlog" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-neon-purple bg-neon-purple/10 px-3 py-1 rounded-full">Vlog</span>
+                            <span class="text-xs text-gray-600">2023</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Rajab But Vlog</h3>
+                        <p class="text-gray-500 text-sm">Multi-camera concert edit with crowd-synced cuts and atmospheric lighting.</p>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/watch?v=Ri1Fdh3MHHk" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="reel">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/Ri1Fdh3MHHk/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/Ri1Fdh3MHHk/mqdefault.jpg'; this.onerror=null;" alt="Promotional Short" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-pink-500 bg-pink-500/10 px-3 py-1 rounded-full">Reel</span>
+                            <span class="text-xs text-gray-600">2022</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Promotional Short</h3>
+                        <p class="text-gray-500 text-sm">A promotional server setup video recorded and edited by our company.</p>
+                    </div>
+                </a>
+
+                <a href="https://youtube.com/shorts/-A63sCvsrzI" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="reel">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/-A63sCvsrzI/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/-A63sCvsrzI/mqdefault.jpg'; this.onerror=null;" alt="Funny Short" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-pink-500 bg-pink-500/10 px-3 py-1 rounded-full">Reel</span>
+                            <span class="text-xs text-gray-600">2025</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Funny Short</h3>
+                        <p class="text-gray-500 text-sm">Hilarious short-form content optimized for maximum engagement and shares.</p>
+                    </div>
+                </a>
+                <a href="https://youtu.be/6vVT5NQzlG0" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="gaming">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/6vVT5NQzlG0/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/6vVT5NQzlG0/mqdefault.jpg'; this.onerror=null;" alt="Roblox Video" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-neon bg-neon-dim px-3 py-1 rounded-full">Gaming</span>
+                            <span class="text-xs text-gray-600">2025</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Roblox Video</h3>
+                        <p class="text-gray-500 text-sm">High-energy Roblox gameplay edit with fast-paced cuts and dynamic transitions.</p>
+                    </div>
+                </a>
+                <a href="https://youtu.be/mCkwnOwYVVU" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="gaming">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/mCkwnOwYVVU/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/mCkwnOwYVVU/mqdefault.jpg'; this.onerror=null;" alt="Minecraft Lucky Block" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-neon bg-neon-dim px-3 py-1 rounded-full">Gaming</span>
+                            <span class="text-xs text-gray-600">2025</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Minecraft Lucky Block</h3>
+                        <p class="text-gray-500 text-sm">Exciting Minecraft Lucky Block challenge edit with cinematic pacing and SFX.</p>
+                    </div>
+                </a>
+
+                <a href="https://youtu.be/ILXWZaVaV_w" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="gaming">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/ILXWZaVaV_w/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/ILXWZaVaV_w/mqdefault.jpg'; this.onerror=null;" alt="Cinematic Minecraft Video" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-neon bg-neon-dim px-3 py-1 rounded-full">Gaming</span>
+                            <span class="text-xs text-gray-600">2025</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Cinematic Minecraft Video</h3>
+                        <p class="text-gray-500 text-sm">Stunning cinematic Minecraft edit with atmospheric visuals and smooth transitions.</p>
+                    </div>
+                </a>
+                <a href="https://youtu.be/ZeO4-LcL8TQ" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="gaming">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/ZeO4-LcL8TQ/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/ZeO4-LcL8TQ/mqdefault.jpg'; this.onerror=null;" alt="Funny Minecraft Video" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-neon bg-neon-dim px-3 py-1 rounded-full">Gaming</span>
+                            <span class="text-xs text-gray-600">2025</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Funny Minecraft Video</h3>
+                        <p class="text-gray-500 text-sm">Entertaining Minecraft gameplay filled with hilarious moments and comedic timing.</p>
+                    </div>
+                </a>
+
+                <a href="https://youtube.com/shorts/IjQYJ8rygqY" target="_blank" rel="noopener noreferrer" class="project-card group bg-dark-card rounded-2xl overflow-hidden border border-dark-border" data-category="reel">
+                    <div class="aspect-video relative overflow-hidden">
+                        <img src="https://img.youtube.com/vi/IjQYJ8rygqY/hqdefault.jpg" onerror="this.src='https://img.youtube.com/vi/IjQYJ8rygqY/mqdefault.jpg'; this.onerror=null;" alt="Funny Short 02" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-dark/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
+                            <div class="w-14 h-14 rounded-full bg-neon flex items-center justify-center transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                                <i data-lucide="external-link" class="w-5 h-5 text-dark"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-3 right-3 px-2 py-1 rounded bg-black/60 text-xs text-white font-medium flex items-center gap-1 z-10">
+                            <i data-lucide="external-link" class="w-3 h-3"></i>Watch
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-medium text-pink-500 bg-pink-500/10 px-3 py-1 rounded-full">Reel</span>
+                            <span class="text-xs text-gray-600">2025</span>
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-white mb-2 group-hover:text-neon transition-colors">Funny Short 02</h3>
+                        <p class="text-gray-500 text-sm">Another viral short-form clip packed with humor and fast-paced editing.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-32 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-neon-dim to-transparent opacity-30"></div>
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div class="relative">
+                    <div class="aspect-[4/5] rounded-2xl overflow-hidden neon-border">
+                        <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=1000&fit=crop&q=80" alt="Editing Setup" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-dark-card border border-dark-border rounded-xl p-6 shadow-2xl z-20">
+                        <div class="flex items-center gap-3">
+                            <div class="flex -space-x-2">
+                                <div class="w-10 h-10 rounded-lg bg-neon/20 flex items-center justify-center text-neon text-xs font-bold border border-neon/30">Pr</div>
+                                <div class="w-10 h-10 rounded-lg bg-neon-purple/20 flex items-center justify-center text-neon-purple text-xs font-bold border border-neon-purple/30">Ae</div>
+                                <div class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center text-pink-500 text-xs font-bold border border-pink-500/30">Da</div>
+                            </div>
+                        </div>
+                        <p class="text-sm font-semibold text-white mt-3">Adobe Creative Suite</p>
+                        <p class="text-xs text-gray-500">Professional workflow</p>
+                    </div>
+                </div>
+                <div class="space-y-8">
+                    <div>
+                        <p class="text-neon text-sm font-medium tracking-widest uppercase mb-4">About Me</p>
+                        <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-6">Klanto<span class="gradient-text">Playz</span></h2>
+                    </div>
+                    <div class="space-y-4 text-gray-400 leading-relaxed">
+                        <p>With over 2 years of professional video editing experience, I've developed a keen eye for storytelling through motion. My journey began with gaming content creation, which evolved into a passion for cinematic editing and color grading.</p>
+                        <p>I specialize in creating engaging content across multiple platforms—from high-energy TikToks to polished commercial advertisements. My editing style emphasizes rhythm, emotional pacing, and visual coherence.</p>
+                        <p>Whether it's syncing cuts to music beats, crafting seamless transitions, or applying cinematic color grades, I bring technical precision and creative flair to every project.</p>
+                    </div>
+                    <div class="space-y-6 pt-4">
                         <div class="flex gap-4">
                             <div class="flex flex-col items-center">
-                                <div class="w-3 h-3 rounded-full bg-sky-500"></div>
-                                <div class="w-0.5 h-full bg-sky-200"></div>
+                                <div class="w-3 h-3 rounded-full bg-neon shadow-[0_0_10px_rgba(0,240,255,0.5)]"></div>
+                                <div class="w-px h-full bg-gradient-to-b from-neon to-transparent"></div>
                             </div>
                             <div class="pb-6">
-                                <span class="text-sm font-semibold text-sky-600">2024 - Present</span>
-                                <h4 class="text-lg font-bold text-slate-900 mt-1">Freelance Video Editor</h4>
-                                <p class="text-slate-600 text-sm mt-1">Working with brands and creators worldwide</p>
+                                <span class="text-sm font-semibold text-neon">2024 - Present</span>
+                                <h4 class="text-lg font-bold text-white mt-1">Freelance Video Editor</h4>
+                                <p class="text-gray-500 text-sm mt-1">Working with brands and creators worldwide</p>
                             </div>
                         </div>
                         <div class="flex gap-4">
                             <div class="flex flex-col items-center">
-                                <div class="w-3 h-3 rounded-full bg-sky-400"></div>
-                                <div class="w-0.5 h-full bg-sky-200"></div>
+                                <div class="w-3 h-3 rounded-full bg-neon-purple shadow-[0_0_10px_rgba(184,41,247,0.5)]"></div>
+                                <div class="w-px h-full bg-gradient-to-b from-neon-purple to-transparent"></div>
                             </div>
-                            <div class="pb-6">
-                                <span class="text-sm font-semibold text-sky-600">2022 - 2024</span>
-                                <h4 class="text-lg font-bold text-slate-900 mt-1">Content Editor</h4>
-                                <p class="text-slate-600 text-sm mt-1">Built portfolio editing gaming and lifestyle content</p>
+                            <div>
+                                <span class="text-sm font-semibold text-neon-purple">2022 - 2024</span>
+                                <h4 class="text-lg font-bold text-white mt-1">Content Editor</h4>
+                                <p class="text-gray-500 text-sm mt-1">Built portfolio editing gaming and lifestyle content</p>
                             </div>
                         </div>
                     </div>
@@ -665,394 +501,278 @@
         </div>
     </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="py-24 bg-white">
+    <section id="skills" class="py-32 relative grid-lines">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-sm font-semibold text-sky-600 tracking-wide uppercase mb-2">Expertise</h2>
-                <h3 class="text-4xl font-bold text-slate-900 mb-4">Technical Proficiency</h3>
-                <p class="text-slate-600 max-w-2xl mx-auto">Mastering industry-standard tools and techniques to deliver professional-grade content.</p>
+                <p class="text-neon text-sm font-medium tracking-widest uppercase mb-4">Expertise</p>
+                <h2 class="font-display text-4xl md:text-6xl font-bold text-white mb-6">Technical<br><span class="gradient-text">Proficiency</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Mastering industry-standard tools and techniques to deliver professional-grade content.</p>
             </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Skill Card 1 -->
-                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
-                    <div class="w-14 h-14 bg-sky-100 rounded-xl flex items-center justify-center mb-6">
-                        <i data-lucide="scissors" class="w-7 h-7 text-sky-600"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-2">Video Editing</h4>
-                    <p class="text-slate-600 text-sm mb-4">Precision cutting, pacing, and rhythm synchronization</p>
-                    <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-sky-500 h-2 rounded-full" data-width="95%"></div>
-                    </div>
-                    <span class="text-xs text-slate-500 mt-2 inline-block">95% Proficiency</span>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-dark-card border border-dark-border rounded-2xl p-8 hover:border-neon/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-neon-dim flex items-center justify-center mb-6"><i data-lucide="scissors" class="w-6 h-6 text-neon"></i></div>
+                    <h4 class="text-xl font-display font-bold text-white mb-2">Video Editing</h4>
+                    <p class="text-gray-500 text-sm mb-5">Precision cutting, pacing, and rhythm synchronization</p>
+                    <div class="skill-track h-2"><div class="skill-fill" data-width="95%"></div></div>
+                    <span class="text-xs text-gray-600 mt-3 inline-block">95%</span>
                 </div>
-
-                <!-- Skill Card 2 -->
-                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
-                    <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-6">
-                        <i data-lucide="palette" class="w-7 h-7 text-purple-600"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-2">Color Grading</h4>
-                    <p class="text-slate-600 text-sm mb-4">Cinematic LUTs, color correction, and mood enhancement</p>
-                    <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-purple-500 h-2 rounded-full" data-width="90%"></div>
-                    </div>
-                    <span class="text-xs text-slate-500 mt-2 inline-block">90% Proficiency</span>
+                <div class="bg-dark-card border border-dark-border rounded-2xl p-8 hover:border-neon-purple/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-neon-purple/10 flex items-center justify-center mb-6"><i data-lucide="palette" class="w-6 h-6 text-neon-purple"></i></div>
+                    <h4 class="text-xl font-display font-bold text-white mb-2">Color Grading</h4>
+                    <p class="text-gray-500 text-sm mb-5">Cinematic LUTs, color correction, and mood enhancement</p>
+                    <div class="skill-track h-2"><div class="skill-fill" data-width="90%"></div></div>
+                    <span class="text-xs text-gray-600 mt-3 inline-block">90%</span>
                 </div>
-
-                <!-- Skill Card 3 -->
-                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
-                    <div class="w-14 h-14 bg-pink-100 rounded-xl flex items-center justify-center mb-6">
-                        <i data-lucide="zap" class="w-7 h-7 text-pink-600"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-2">Motion Graphics</h4>
-                    <p class="text-slate-600 text-sm mb-4">Text animations, lower thirds, and visual effects</p>
-                    <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-pink-500 h-2 rounded-full" data-width="85%"></div>
-                    </div>
-                    <span class="text-xs text-slate-500 mt-2 inline-block">85% Proficiency</span>
+                <div class="bg-dark-card border border-dark-border rounded-2xl p-8 hover:border-pink-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center mb-6"><i data-lucide="zap" class="w-6 h-6 text-pink-500"></i></div>
+                    <h4 class="text-xl font-display font-bold text-white mb-2">Motion Graphics</h4>
+                    <p class="text-gray-500 text-sm mb-5">Text animations, lower thirds, and visual effects</p>
+                    <div class="skill-track h-2"><div class="skill-fill" data-width="85%"></div></div>
+                    <span class="text-xs text-gray-600 mt-3 inline-block">85%</span>
                 </div>
-
-                <!-- Skill Card 4 -->
-                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
-                    <div class="w-14 h-14 bg-cyan-100 rounded-xl flex items-center justify-center mb-6">
-                        <i data-lucide="music" class="w-7 h-7 text-cyan-600"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-2">Sound Design</h4>
-                    <p class="text-slate-600 text-sm mb-4">Audio mixing, SFX integration, and music synchronization</p>
-                    <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-cyan-500 h-2 rounded-full" data-width="88%"></div>
-                    </div>
-                    <span class="text-xs text-slate-500 mt-2 inline-block">88% Proficiency</span>
+                <div class="bg-dark-card border border-dark-border rounded-2xl p-8 hover:border-cyan-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6"><i data-lucide="music" class="w-6 h-6 text-cyan-500"></i></div>
+                    <h4 class="text-xl font-display font-bold text-white mb-2">Sound Design</h4>
+                    <p class="text-gray-500 text-sm mb-5">Audio mixing, SFX integration, and music sync</p>
+                    <div class="skill-track h-2"><div class="skill-fill" data-width="88%"></div></div>
+                    <span class="text-xs text-gray-600 mt-3 inline-block">88%</span>
                 </div>
-
-                <!-- Skill Card 5 -->
-                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
-                    <div class="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center mb-6">
-                        <i data-lucide="smartphone" class="w-7 h-7 text-indigo-600"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-2">Social Optimization</h4>
-                    <p class="text-slate-600 text-sm mb-4">Platform-specific formats, captions, and engagement hooks</p>
-                    <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-indigo-500 h-2 rounded-full" data-width="92%"></div>
-                    </div>
-                    <span class="text-xs text-slate-500 mt-2 inline-block">92% Proficiency</span>
+                <div class="bg-dark-card border border-dark-border rounded-2xl p-8 hover:border-indigo-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-6"><i data-lucide="smartphone" class="w-6 h-6 text-indigo-500"></i></div>
+                    <h4 class="text-xl font-display font-bold text-white mb-2">Social Optimization</h4>
+                    <p class="text-gray-500 text-sm mb-5">Platform-specific formats and engagement hooks</p>
+                    <div class="skill-track h-2"><div class="skill-fill" data-width="92%"></div></div>
+                    <span class="text-xs text-gray-600 mt-3 inline-block">92%</span>
                 </div>
-
-                <!-- Skill Card 6 -->
-                <div class="glass-card p-8 rounded-2xl hover-lift border border-sky-100">
-                    <div class="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mb-6">
-                        <i data-lucide="clock" class="w-7 h-7 text-emerald-600"></i>
-                    </div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-2">Fast Delivery</h4>
-                    <p class="text-slate-600 text-sm mb-4">Efficient workflow management and quick turnaround times</p>
-                    <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="skill-bar bg-emerald-500 h-2 rounded-full" data-width="96%"></div>
-                    </div>
-                    <span class="text-xs text-slate-500 mt-2 inline-block">96% Proficiency</span>
+                <div class="bg-dark-card border border-dark-border rounded-2xl p-8 hover:border-emerald-500/30 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6"><i data-lucide="clock" class="w-6 h-6 text-emerald-500"></i></div>
+                    <h4 class="text-xl font-display font-bold text-white mb-2">Fast Delivery</h4>
+                    <p class="text-gray-500 text-sm mb-5">Efficient workflow and quick turnaround times</p>
+                    <div class="skill-track h-2"><div class="skill-fill" data-width="96%"></div></div>
+                    <span class="text-xs text-gray-600 mt-3 inline-block">96%</span>
                 </div>
             </div>
-
-            <!-- Software Tags -->
             <div class="mt-16 flex flex-wrap justify-center gap-3">
-                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">Adobe Premiere Pro</span>
-                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">After Effects</span>
-                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">DaVinci Resolve</span>
-                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">Audition</span>
-                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">Photoshop</span>
-                <span class="px-4 py-2 bg-slate-100 rounded-lg text-slate-700 text-sm font-medium border border-slate-200">Media Encoder</span>
+                <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-400 text-sm hover:border-neon/30 hover:text-neon transition-all cursor-default">Adobe Premiere Pro</span>
+                <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-400 text-sm hover:border-neon/30 hover:text-neon transition-all cursor-default">After Effects</span>
+                <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-400 text-sm hover:border-neon/30 hover:text-neon transition-all cursor-default">DaVinci Resolve</span>
+                <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-400 text-sm hover:border-neon/30 hover:text-neon transition-all cursor-default">Audition</span>
+                <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-400 text-sm hover:border-neon/30 hover:text-neon transition-all cursor-default">Photoshop</span>
+                <span class="px-4 py-2 bg-dark-card border border-dark-border rounded-lg text-gray-400 text-sm hover:border-neon/30 hover:text-neon transition-all cursor-default">Media Encoder</span>
             </div>
         </div>
     </section>
 
-    <!-- Testimonials/Stats Section -->
-    <section class="py-24 sky-gradient-bg text-white relative overflow-hidden">
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+    <section class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-neon-dim via-transparent to-neon-purple/5"></div>
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
-            <div class="grid md:grid-cols-4 gap-8 text-center">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                 <div class="space-y-2">
-                    <div class="text-5xl font-bold">50+</div>
-                    <div class="text-sky-100 text-sm uppercase tracking-wide">Projects Completed</div>
+                    <div class="stat-number font-display text-5xl md:text-6xl font-bold gradient-text" data-target="56">0</div>
+                    <div class="text-gray-500 text-sm uppercase tracking-widest">Projects</div>
                 </div>
                 <div class="space-y-2">
-                    <div class="text-5xl font-bold">2+</div>
-                    <div class="text-sky-100 text-sm uppercase tracking-wide">Years Experience</div>
+                    <div class="stat-number font-display text-5xl md:text-6xl font-bold gradient-text" data-target="2">0</div>
+                    <div class="text-gray-500 text-sm uppercase tracking-widest">Years Exp.</div>
                 </div>
                 <div class="space-y-2">
-                    <div class="text-5xl font-bold">30+</div>
-                    <div class="text-sky-100 text-sm uppercase tracking-wide">Happy Clients</div>
+                    <div class="stat-number font-display text-5xl md:text-6xl font-bold gradient-text" data-target="30">0</div>
+                    <div class="text-gray-500 text-sm uppercase tracking-widest">Clients</div>
                 </div>
                 <div class="space-y-2">
-                    <div class="text-5xl font-bold">100%</div>
-                    <div class="text-sky-100 text-sm uppercase tracking-wide">Satisfaction Rate</div>
+                    <div class="stat-number font-display text-5xl md:text-6xl font-bold gradient-text" data-target="100">0</div>
+                    <div class="text-gray-500 text-sm uppercase tracking-widest">Satisfaction</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-24 bg-slate-50">
+    <section id="contact" class="py-32 relative grid-lines">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid lg:grid-cols-2 gap-16">
-                <div class="space-y-6">
-                    <h2 class="text-sm font-semibold text-sky-600 tracking-wide uppercase">Get in Touch</h2>
-                    <h3 class="text-4xl font-bold text-slate-900">Let's Create Something Amazing</h3>
-                    <p class="text-slate-600 leading-relaxed">
-                        Ready to bring your vision to life? I'm always open to discussing new projects, creative ideas, or opportunities to be part of your story. Whether it's gaming edits, vlogs, or promotional content - let's collaborate!
-                    </p>
-
-                    <div class="space-y-4 pt-4">
-                        <!-- Email -->
+            <div class="grid lg:grid-cols-2 gap-20">
+                <div class="space-y-8">
+                    <div>
+                        <p class="text-neon text-sm font-medium tracking-widest uppercase mb-4">Get in Touch</p>
+                        <h2 class="font-display text-4xl md:text-5xl font-bold text-white mb-6">Let's Create<br><span class="gradient-text">Something</span></h2>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed">Ready to bring your vision to life? I'm always open to discussing new projects, creative ideas, or opportunities to be part of your story.</p>
+                    <div class="space-y-5 pt-4">
                         <a href="mailto:klantoplayzbussiness@gmail.com" class="flex items-center gap-4 group">
-                            <div class="w-12 h-12 bg-sky-100 rounded-lg flex items-center justify-center group-hover:bg-sky-500 transition-colors">
-                                <i data-lucide="mail" class="w-6 h-6 text-sky-600 group-hover:text-white transition-colors"></i>
+                            <div class="w-12 h-12 rounded-xl bg-neon-dim flex items-center justify-center group-hover:bg-neon transition-colors">
+                                <i data-lucide="mail" class="w-5 h-5 text-neon group-hover:text-dark transition-colors"></i>
                             </div>
                             <div>
-                                <p class="text-sm text-slate-500">Email</p>
-                                <p class="text-slate-900 font-medium group-hover:text-sky-600 transition-colors">klantoplayzbussiness@gmail.com</p>
+                                <p class="text-xs text-gray-600">Email</p>
+                                <p class="text-white font-medium group-hover:text-neon transition-colors">klantoplayzbussiness@gmail.com</p>
                             </div>
                         </a>
-
-                        <!-- Discord -->
                         <a href="https://discord.gg/3ajSH6Fk3" target="_blank" rel="noopener noreferrer" class="flex items-center gap-4 group">
-                            <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="text-indigo-600 group-hover:text-white transition-colors">
-                                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                                </svg>
+                            <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-indigo-400 group-hover:text-white transition-colors"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
                             </div>
                             <div>
-                                <p class="text-sm text-slate-500">Discord</p>
-                                <p class="text-slate-900 font-medium group-hover:text-indigo-600 transition-colors">Join My Server</p>
+                                <p class="text-xs text-gray-600">Discord</p>
+                                <p class="text-white font-medium group-hover:text-indigo-400 transition-colors">Join My Server</p>
                             </div>
                         </a>
-
-                        <!-- Location -->
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
-                                <i data-lucide="map-pin" class="w-6 h-6 text-emerald-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-500">Location</p>
-                                <p class="text-slate-900 font-medium">Available Worldwide (Remote)</p>
-                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center"><i data-lucide="map-pin" class="w-5 h-5 text-emerald-400"></i></div>
+                            <div><p class="text-xs text-gray-600">Location</p><p class="text-white font-medium">Available Worldwide (Remote)</p></div>
                         </div>
-
-                        <!-- Response Time -->
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-                                <i data-lucide="clock" class="w-6 h-6 text-amber-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-500">Response Time</p>
-                                <p class="text-slate-900 font-medium">Usually within 24 hours</p>
-                            </div>
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center"><i data-lucide="clock" class="w-5 h-5 text-amber-400"></i></div>
+                            <div><p class="text-xs text-gray-600">Response Time</p><p class="text-white font-medium">Usually within 24 hours</p></div>
                         </div>
                     </div>
-
-                    <!-- Social Links -->
                     <div class="pt-6">
-                        <p class="text-sm font-medium text-slate-700 mb-4">Follow My Work</p>
-                        <div class="flex gap-4">
-                            <!-- YouTube -->
-                            <a href="https://youtube.com/@klantoplayz" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center text-red-600 hover:text-white hover:bg-red-600 transition-all border border-red-200 shadow-sm group" title="YouTube">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-                            </a>
-                            <!-- Instagram -->
-                            <a href="https://www.instagram.com/klanto_playz" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-pink-50 rounded-full flex items-center justify-center text-pink-600 hover:text-white hover:bg-gradient-to-br hover:from-purple-600 hover:via-pink-600 hover:to-orange-500 transition-all border border-pink-200 shadow-sm group" title="Instagram">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                            </a>
-                            <!-- X (Twitter) -->
-                            <a href="https://x.com/klantoplayz" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-800 hover:text-white hover:bg-black transition-all border border-slate-200 shadow-sm group" title="X (Twitter)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                            </a>
-                            <!-- Discord (also in social row) -->
-                            <a href="https://discord.gg/3ajSH6Fk3" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 hover:text-white hover:bg-indigo-500 transition-all border border-indigo-200 shadow-sm group" title="Discord Server">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-                            </a>
+                        <p class="text-sm font-medium text-gray-400 mb-4">Follow My Work</p>
+                        <div class="flex gap-3">
+                            <a href="https://youtube.com/@klantoplayz" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-full bg-dark-card border border-dark-border flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg></a>
+                            <a href="https://www.instagram.com/klanto_playz" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-full bg-dark-card border border-dark-border flex items-center justify-center text-pink-500 hover:bg-gradient-to-br hover:from-purple-600 hover:via-pink-600 hover:to-orange-500 hover:text-white hover:border-transparent transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+                            <a href="https://x.com/klantoplayz" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-full bg-dark-card border border-dark-border flex items-center justify-center text-gray-400 hover:bg-white hover:text-black hover:border-white transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                            <a href="https://discord.gg/3ajSH6Fk3" target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-full bg-dark-card border border-dark-border flex items-center justify-center text-indigo-400 hover:bg-indigo-500 hover:text-white hover:border-indigo-500 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></a>
                         </div>
                     </div>
                 </div>
-
-                <!-- Contact Form -->
-                <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
-                    <h4 class="text-xl font-bold text-slate-900 mb-6">Send a Message</h4>
-                    <form class="space-y-6" action="mailto:klantoplayzbussiness@gmail.com" method="post" enctype="text/plain">
+                <div class="bg-dark-card border border-dark-border rounded-2xl p-8">
+                    <h3 class="font-display text-2xl font-bold text-white mb-8">Send a Message</h3>
+                    <form action="mailto:klantoplayzbussiness@gmail.com" method="post" enctype="text/plain" class="space-y-6">
                         <div class="grid md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Name</label>
-                                <input type="text" name="name" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all" placeholder="Your name" required>
+                                <label class="block text-sm text-gray-400 mb-2">Name</label>
+                                <input type="text" name="name" required class="w-full px-4 py-3 bg-dark border border-dark-border rounded-xl text-white placeholder-gray-600 focus:border-neon focus:outline-none focus:ring-1 focus:ring-neon/30 transition-all" placeholder="Your name">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Email</label>
-                                <input type="email" name="email" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all" placeholder="your@email.com" required>
+                                <label class="block text-sm text-gray-400 mb-2">Email</label>
+                                <input type="email" name="email" required class="w-full px-4 py-3 bg-dark border border-dark-border rounded-xl text-white placeholder-gray-600 focus:border-neon focus:outline-none focus:ring-1 focus:ring-neon/30 transition-all" placeholder="your@email.com">
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Project Type</label>
-                            <select name="project" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all">
-                                <option>Gaming Video Edit</option>
-                                <option>Vlog Edit</option>
-                                <option>YouTube Short/Reel</option>
-                                <option>Promotional Video</option>
-                                <option>Other</option>
+                            <label class="block text-sm text-gray-400 mb-2">Project Type</label>
+                            <select name="project" class="w-full px-4 py-3 bg-dark border border-dark-border rounded-xl text-white focus:border-neon focus:outline-none focus:ring-1 focus:ring-neon/30 transition-all">
+                                <option class="bg-dark">Gaming Video Edit</option>
+                                <option class="bg-dark">Vlog Edit</option>
+                                <option class="bg-dark">YouTube Short/Reel</option>
+                                <option class="bg-dark">Promotional Video</option>
+                                <option class="bg-dark">Other</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Budget Range</label>
-                            <select name="budget" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all">
-                                <option>Under $50</option>
-                                <option>$50 - $100</option>
-                                <option>$100 - $200</option>
-                                <option>$200+</option>
-                                <option>Let's discuss</option>
+                            <label class="block text-sm text-gray-400 mb-2">Budget Range</label>
+                            <select name="budget" class="w-full px-4 py-3 bg-dark border border-dark-border rounded-xl text-white focus:border-neon focus:outline-none focus:ring-1 focus:ring-neon/30 transition-all">
+                                <option class="bg-dark">Under $50</option>
+                                <option class="bg-dark">$50 - $100</option>
+                                <option class="bg-dark">$100 - $200</option>
+                                <option class="bg-dark">$200+</option>
+                                <option class="bg-dark">Let's discuss</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Message</label>
-                            <textarea name="message" rows="4" class="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-200 outline-none transition-all resize-none" placeholder="Tell me about your project..." required></textarea>
+                            <label class="block text-sm text-gray-400 mb-2">Message</label>
+                            <textarea name="message" rows="4" required class="w-full px-4 py-3 bg-dark border border-dark-border rounded-xl text-white placeholder-gray-600 focus:border-neon focus:outline-none focus:ring-1 focus:ring-neon/30 transition-all resize-none" placeholder="Tell me about your project..."></textarea>
                         </div>
-                        <button type="submit" class="w-full py-4 bg-sky-500 text-white rounded-lg font-medium hover:bg-sky-600 transition-all hover:shadow-lg hover:shadow-sky-500/30 flex items-center justify-center gap-2">
-                            Send Message
-                            <i data-lucide="send" class="w-4 h-4"></i>
+                        <button type="submit" class="magnetic-btn w-full py-4 bg-neon text-dark font-semibold rounded-xl hover:shadow-[0_0_30px_rgba(0,240,255,0.3)] transition-all flex items-center justify-center gap-2">
+                            Send Message<i data-lucide="send" class="w-4 h-4"></i>
                         </button>
-                        <p class="text-xs text-slate-500 text-center">Or email me directly at <a href="mailto:klantoplayzbussiness@gmail.com" class="text-sky-600 hover:underline">klantoplayzbussiness@gmail.com</a></p>
+                        <p class="text-xs text-gray-600 text-center">Or email directly at <a href="mailto:klantoplayzbussiness@gmail.com" class="text-neon hover:underline">klantoplayzbussiness@gmail.com</a></p>
                     </form>
                 </div>
             </div>
         </div>
-    </section><!-- Footer -->
-    <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-2xl font-bold text-white">
-                Klanto<span class="text-sky-500">Playz</span>
-            </div>
-            <div class="text-sm">
-                © 2024 KlantoPlayz. All rights reserved.
-            </div>
-            <div class="flex gap-6 text-sm">
-                <a href="#" class="hover:text-sky-400 transition-colors">Privacy</a>
-                <a href="#" class="hover:text-sky-400 transition-colors">Terms</a>
-            </div>
+    </section>
+
+    <footer class="border-t border-dark-border py-12">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex justify-center items-center">
+            <div class="font-display text-xl font-bold"><span class="text-white">Klanto</span><span class="neon-text">Playz</span></div>
         </div>
     </footer>
 
-    
-
     <script>
-        // Skill Bar Animation
-        const skillBars = document.querySelectorAll('.skill-bar');
-        const skillsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const bar = entry.target;
-                    const width = bar.getAttribute('data-width');
-                    bar.style.width = width;
-                    skillsObserver.unobserve(bar);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        skillBars.forEach(bar => skillsObserver.observe(bar));
-
-        // GSAP ScrollTrigger for skill bars (if GSAP is loaded)
-        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-            gsap.registerPlugin(ScrollTrigger);
-
-            skillBars.forEach(bar => {
-                const targetWidth = bar.getAttribute('data-width');
-                gsap.to(bar, {
-                    width: targetWidth,
-                    duration: 1.5,
-                    ease: 'power2.out',
-                    scrollTrigger: {
-                        trigger: bar,
-                        start: 'top 85%',
-                        once: true
-                    }
-                });
-            });
-        }
-
-        // Initialize Lucide Icons
         lucide.createIcons();
-
-        // Custom Cursor
-        const cursor = document.getElementById('cursor');
-        const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-        
-        if (!isTouchDevice && cursor) {
-            document.addEventListener('mousemove', (e) => {
-                cursor.style.left = e.clientX - 10 + 'px';
-                cursor.style.top = e.clientY - 10 + 'px';
-            });
-
-            document.querySelectorAll('a, button, .project-card').forEach(el => {
-                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-            });
-        }
-
-        // Navbar Scroll Effect
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
-                navbar.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+                navbar.classList.add('bg-dark/90', 'backdrop-blur-xl', 'border-b', 'border-dark-border');
             } else {
-                navbar.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-sm');
+                navbar.classList.remove('bg-dark/90', 'backdrop-blur-xl', 'border-b', 'border-dark-border');
             }
         });
-
-        // Mobile Menu
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+        mobileMenuBtn.addEventListener('click', () => { mobileMenu.classList.toggle('hidden'); });
+        mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => mobileMenu.classList.add('hidden')); });
 
-        // Close mobile menu when clicking a link
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-            });
-        });
-
-        // Project Filtering
         const filterBtns = document.querySelectorAll('.filter-btn');
         const projectCards = document.querySelectorAll('.project-card');
-
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Update active button
-                filterBtns.forEach(b => {
-                    b.classList.remove('bg-sky-500', 'text-white');
-                    b.classList.add('bg-slate-100', 'text-slate-600');
-                });
-                btn.classList.remove('bg-slate-100', 'text-slate-600');
-                btn.classList.add('bg-sky-500', 'text-white');
-
+                filterBtns.forEach(b => { b.classList.remove('bg-neon', 'text-dark'); b.classList.add('bg-dark-card', 'text-gray-400'); });
+                btn.classList.remove('bg-dark-card', 'text-gray-400'); btn.classList.add('bg-neon', 'text-dark');
                 const filter = btn.getAttribute('data-filter');
-                
                 projectCards.forEach(card => {
                     if (filter === 'all' || card.getAttribute('data-category') === filter) {
                         card.style.display = 'block';
-                        setTimeout(() => {
-                            card.style.opacity = '1';
-                            card.style.transform = 'scale(1)';
-                        }, 10);
+                        setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 10);
                     } else {
-                        card.style.opacity = '0';
-                        card.style.transform = 'scale(0.9)';
-                        setTimeout(() => {
-                            card.style.display = 'none';
-                        }, 300);
+                        card.style.opacity = '0'; card.style.transform = 'scale(0.95)';
+                        setTimeout(() => card.style.display = 'none', 300);
                     }
                 });
             });
         });
 
-        
+        function initSkillBars() {
+            const skillBars = document.querySelectorAll('.skill-fill');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const bar = entry.target;
+                        const width = bar.getAttribute('data-width');
+                        setTimeout(() => { bar.style.width = width; }, 200);
+                        observer.unobserve(bar);
+                    }
+                });
+            }, { threshold: 0.2 });
+            skillBars.forEach(bar => observer.observe(bar));
+        }
+
+        function initStatCounters() {
+            const stats = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const target = parseInt(el.getAttribute('data-target'));
+                        let current = 0;
+                        const increment = target / 50;
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                el.textContent = target + (target === 100 ? '%' : '+');
+                                clearInterval(timer);
+                            } else {
+                                el.textContent = Math.floor(current);
+                            }
+                        }, 30);
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+            stats.forEach(stat => observer.observe(stat));
+        }
+
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+            gsap.utils.toArray('section > div').forEach(section => {
+                gsap.from(section, { y: 40, opacity: 0.8, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: section, start: 'top 85%', once: true } });
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => { initSkillBars(); initStatCounters(); });
+        } else {
+            initSkillBars(); initStatCounters();
+        }
     </script>
 </body>
 </html>
